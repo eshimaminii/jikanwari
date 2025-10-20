@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>ログアウト完了｜私の時間割</title>
 <link rel="stylesheet"
 	href="<%=request.getContextPath()%>/css/common.css">
 
