@@ -1,12 +1,18 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>曜日指定の予定変更確認｜私の時間割</title>
+<link rel="stylesheet"
+	href="<%=request.getContextPath()%>/css/common.css">
+
 </head>
 <body>
+	<%@ include file="/common/header.jsp"%>
 
+
+	<%@ include file="/common/footer.jsp"%>
 </body>
 </html>

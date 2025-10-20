@@ -1,1 +1,111 @@
-@charset "UTF-8";
+body {
+	margin: 0;
+	padding-top: 80px;
+	padding-bottom: 80px;
+	font-family: 'Arial', sans-serif;
+	display: flex;
+	justify-content: center;
+	align-items: flex-start;
+	min-height: calc(100vh - 160px);
+	overflow-x: hidden;
+}
+
+.site-header {
+  background-color: #000;
+  height: 80px;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 15px;
+  box-sizing: border-box;
+}
+
+.header-container {
+  color: white;
+  font-size: 28px;
+  font-weight: bold;
+  text-align: center;
+  flex: 1;
+}
+
+.site-footer {
+  background-color: #000;
+  height: 80px;
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.header-button {
+  display: flex;
+  align-items: center;
+  height: 60px;
+  font-weight: bold;
+  text-decoration: none;
+  cursor: pointer;
+  padding: 0 10px;
+}
+
+.header-button .button-icon {
+  width: 30px;
+  height: 30px;
+  margin-right: 8px;
+}
+
+.footer-container {
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.container {
+	background-color: white;
+	width: 100%;
+	max-width: 500px;
+	margin: 40px 20px;
+	padding: 30px 20px;
+	border-radius: 10px;
+	text-align: center;
+}
+
+h1 {
+	font-size: 28px;
+	margin-bottom: 30px;
+}
+
+.image-button {
+	display: block;
+	width: 100%;
+	max-width: 340px;
+	height: 60px;
+	margin: 0 auto 20px;
+	background-image:
+		url('../images/button_s.png');
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+	border: none;
+	cursor: pointer;
+	color: white;
+	font-size: 20px;
+	font-weight: bold;
+	text-align: center;
+	line-height: 60px;
+	text-decoration: none;
+	border-radius: 8px;
+	transition: transform 0.1s ease, filter 0.1s ease;
+}
+
+.image-button:active {
+	transform: scale(0.95);
+	filter: brightness(85%);
+}
