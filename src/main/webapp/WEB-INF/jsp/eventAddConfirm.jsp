@@ -12,7 +12,7 @@
 <%@ include file="/common/header.jsp" %>
 
 <div class="container">
-    <h1>入力内容確認</h1>
+    <h1>入力内容の確認</h1>
 
     <c:set var="event" value="${sessionScope.event}" />
 
@@ -27,18 +27,15 @@
         </tr>
         <tr>
             <th>開始時刻</th>
-            <td>
-                <c:out value="${event.startHour}" />時 
-                <c:out value="${event.startMinute}" />分
-            </td>
+            <td>${event.startHour}時 ${event.startMinute}分</td>
         </tr>
         <tr>
             <th>継続時間</th>
-            <td><c:out value="${event.durationMinutes}" /> 分</td>
+            <td>${event.durationMinutes} 分</td>
         </tr>
         <tr>
             <th>メモ</th>
-            <td><c:out value="${event.description}" /></td>
+            <td>${event.description}</td>
         </tr>
         <tr>
             <th>繰り返し</th>
@@ -60,18 +57,23 @@
         </tr>
     </table>
 
-    <form action="EventAddServlet" method="post" style="margin-top:20px;">
+    <form method="post" action="<%=request.getContextPath()%>/EventAddServlet">
+        <!-- hiddenデータを送る（NewUserConfirmと同じ形式） -->
         <input type="hidden" name="action" value="submit">
-        <div style="text-align:center; margin-top:30px;">
-            <button type="submit">この内容で登録する</button>
+        <input type="hidden" name="title" value="${event.title}">
+        <input type="hidden" name="date" value="${event.date}">
+        <input type="hidden" name="startHour" value="${event.startHour}">
+        <input type="hidden" name="startMinute" value="${event.startMinute}">
+        <input type="hidden" name="durationMinutes" value="${event.durationMinutes}">
+        <input type="hidden" name="description" value="${event.description}">
+        <input type="hidden" name="repeat_flag" value="${event.repeat_flag ? 1 : 0}">
+        <input type="hidden" name="color_id" value="${event.color_id}">
+
+        <div class="button-area" style="text-align:center; margin-top:30px;">
+            <button type="button" class="image-button" onclick="history.back()">修正</button>
+            <button type="submit" class="image-button">登録</button>
         </div>
     </form>
-
-    <div style="text-align:center; margin-top:15px;">
-        <form action="EventAddServlet" method="get">
-            <button type="submit">修正する</button>
-        </form>
-    </div>
 
 </div>
 

@@ -96,17 +96,18 @@ public class EventsDAO {
 	
 	public boolean update(Event event) {
 		try (Connection conn = DBManager.getConnection()) {
-			String sql = "UPDATE events SET title=?, date=?, description=?, repeat_flag=?, color_id=?, start_hour=?, start_minute=?, duration_minutes=? WHERE event_id=?";
+			String sql = "UPDATE events SET title=?, date=?, time=?, description=?, repeat_flag=?, color_id=?, duration_minutes=? WHERE event_id=?";
 			try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-				stmt.setString(1, event.getTitle());
-				stmt.setDate(2, Date.valueOf(event.getDate()));
-				stmt.setString(3, event.getDescription());
-				stmt.setBoolean(4, event.isRepeat_flag());
-				stmt.setString(5, event.getColor_id());
-				stmt.setInt(6, event.getStartHour());
-				stmt.setInt(7, event.getStartMinute());
-				stmt.setInt(8, event.getDurationMinutes());
-				stmt.setInt(9, event.getEvent_id());
+			    LocalTime time = LocalTime.of(event.getStartHour(), event.getStartMinute());
+			    stmt.setString(1, event.getTitle());
+			    stmt.setDate(2, Date.valueOf(event.getDate()));
+			    stmt.setTime(3, Time.valueOf(time));
+			    stmt.setString(4, event.getDescription());
+			    stmt.setBoolean(5, event.isRepeat_flag());
+			    stmt.setString(6, event.getColor_id());
+			    stmt.setInt(7, event.getDurationMinutes());
+			    stmt.setInt(8, event.getEvent_id());
+			    stmt.executeUpdate();
 
 				int rows = stmt.executeUpdate();
 				return rows > 0;

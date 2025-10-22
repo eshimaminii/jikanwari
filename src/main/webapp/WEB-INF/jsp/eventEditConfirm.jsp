@@ -1,51 +1,73 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>予定編集確認｜私の時間割</title>
-<link rel="stylesheet"
-	href="<%=request.getContextPath()%>/css/common.css">
-
+<link rel="stylesheet" href="<%=request.getContextPath()%>/css/common.css">
 </head>
 <body>
-	<%@ include file="/common/header.jsp"%>
 
-	<h1>編集内容の確認</h1>
-	<p>タイトル：${event.title}</p>
-	<p>日付：${event.date}</p>
-	<p>開始時：${event.startHour}時 ${event.startMinute}分</p>
-	<p>継続時間：${event.durationMinutes}分</p>
-	<p>メモ：${event.description}</p>
-	<p>繰り返し：${event.repeat_flag ? 'あり' : 'なし'}</p>
-	<c:if test="${event.repeat_flag}">
-		<p>
-			繰り返し曜日：
-			<c:forEach var="weekday" items="${weekdayList}">
-				<c:if
-					test="${event.weekdayIds != null && event.weekdayIds.contains(weekday.weekday_id)}">
-        ${weekday.weekday}
-      </c:if>
-			</c:forEach>
-		</p>
-	</c:if>
-	<p>カラー：${event.color_id}</p>
+<%@ include file="/common/header.jsp" %>
 
-	<form action="EventEditServlet" method="post">
-		<input type="hidden" name="action" value="submit" /> <input
-			type="hidden" name="event_id" value="${event.event_id}" /> <input
-			type="hidden" name="title" value="${event.title}" /> <input
-			type="hidden" name="date" value="${event.date}" /> <input
-			type="hidden" name="startHour" value="${event.startHour}" /> <input
-			type="hidden" name="startMinute" value="${event.startMinute}" /> <input
-			type="hidden" name="durationMinutes" value="${event.durationMinutes}" />
-		<input type="hidden" name="description" value="${event.description}" />
-		<input type="hidden" name="repeat_flag" value="${event.repeat_flag}" />
-		<input type="hidden" name="color_id" value="${event.color_id}" />
-		<button type="submit">登録する</button>
-	</form>
+<div class="container">
+    <h1>編集内容の確認</h1>
 
-	<%@ include file="/common/footer.jsp"%>
+    <c:set var="event" value="${event}" />
+
+    <table class="confirm-table" border="1" style="margin:auto; width:80%; border-collapse:collapse;">
+        <tr><th>タイトル</th><td>${event.title}</td></tr>
+        <tr><th>日付</th><td>${event.date}</td></tr>
+        <tr><th>開始時刻</th><td>${event.startHour}時 ${event.startMinute}分</td></tr>
+        <tr><th>継続時間</th><td>${event.durationMinutes}分</td></tr>
+        <tr><th>メモ</th><td>${event.description}</td></tr>
+        <tr><th>繰り返し</th>
+            <td><c:choose><c:when test="${event.repeat_flag}">あり</c:when><c:otherwise>なし</c:otherwise></c:choose></td>
+        </tr>
+        <c:if test="${event.repeat_flag}">
+            <tr>
+                <th>繰り返し曜日</th>
+                <td>
+                    <c:forEach var="weekday" items="${weekdayList}">
+                        <c:if test="${event.weekdayIds != null && event.weekdayIds.contains(weekday.weekday_id)}">${weekday.weekday}&nbsp;</c:if>
+                    </c:forEach>
+                </td>
+            </tr>
+        </c:if>
+        <tr>
+            <th>カラー</th>
+            <td>
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <div style="width:20px;height:20px;background-color:${event.color_id};border:1px solid #999;"></div>
+                    <span>${event.color_id}</span>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <form method="post" action="<%=request.getContextPath()%>/EventEditServlet">
+        <input type="hidden" name="action" value="submit">
+        <input type="hidden" name="event_id" value="${event.event_id}">
+        <input type="hidden" name="title" value="${event.title}">
+        <input type="hidden" name="date" value="${event.date}">
+        <input type="hidden" name="startHour" value="${event.startHour}">
+        <input type="hidden" name="startMinute" value="${event.startMinute}">
+        <input type="hidden" name="durationMinutes" value="${event.durationMinutes}">
+        <input type="hidden" name="description" value="${event.description}">
+        <input type="hidden" name="repeat_flag" value="${event.repeat_flag ? 1 : 0}">
+        <input type="hidden" name="color_id" value="${event.color_id}">
+        <c:forEach var="weekdayId" items="${event.weekdayIds}">
+            <input type="hidden" name="weekday_ids" value="${weekdayId}">
+        </c:forEach>
+
+        <div class="button-area" style="text-align:center; margin-top:30px;">
+            <button type="button" class="image-button" onclick="history.back()">修正</button>
+            <button type="submit" class="image-button">登録</button>
+        </div>
+    </form>
+</div>
+
+<%@ include file="/common/footer.jsp" %>
 </body>
 </html>
