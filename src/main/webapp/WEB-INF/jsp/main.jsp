@@ -18,17 +18,17 @@
 		<div class="header-container">私の時間割</div>
 
 		<a href="<%=request.getContextPath()%>/LogoutServlet"
-			class="header-button" role="button"> <img
-			src="<%=request.getContextPath()%>/images/logout.png"
-			class="button-icon" alt="ログアウト">
+			class="header-button" role="button">
+			<img src="<%=request.getContextPath()%>/images/logout.png"
+				class="button-icon" alt="ログアウト">
 		</a>
 	</header>
 
 	<div class="container">
 
 		<a href="<%=request.getContextPath()%>/EventAddServlet"
-			class="image-button-l" role="button">予定を入れる</a> <a
-			href="<%=request.getContextPath()%>/WeeklyEventServlet"
+			class="image-button-l" role="button">予定を入れる</a> 
+		<a href="<%=request.getContextPath()%>/WeeklyEventServlet"
 			class="image-button-l" role="button">曜日指定の予定一覧</a>
 
 		<div class="date-display">
@@ -36,14 +36,13 @@
 		</div>
 
 		<div class="schedule-table">
-
-			<c:forEach begin="7" end="16" var="hour">
+			<c:forEach begin="7" end="23" var="hour">
 				<div class="time-slot hour-start" data-time="${hour}:00">
 					<div class="time-label">${hour}</div>
 					<div class="time-line"></div>
 				</div>
 
-				<c:if test="${hour < 16}">
+				<c:if test="${hour < 23}">
 					<div class="time-slot half-hour" data-time="${hour}:30">
 						<div class="time-line half"></div>
 					</div>
@@ -55,17 +54,17 @@
 					value="${event.startHour * 60 + event.startMinute}" />
 				<c:set var="offsetMinutes" value="${totalStartMinutes - 7 * 60}" />
 
-				<div class="event-block"
+				<a href="<%=request.getContextPath()%>/EventEditServlet?event_id=${event.event_id}"
+					class="event-block"
 					style="top: ${offsetMinutes * 2}px; 
 						height: ${event.durationMinutes * 2}px; 
-						background-color: ${event.colorCode};">
+						background-color: ${event.color_id};">
 
 					<div class="event-title">${event.title}</div>
-				</div>
+				</a>
 			</c:forEach>
 		</div>
 	</div>
-
 
 	<%@ include file="/common/footer.jsp"%>
 </body>

@@ -1,6 +1,7 @@
 package model;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class Event {
 	private int event_id;
@@ -92,5 +93,18 @@ public class Event {
 
 	public void setColor_id(String color_id) {
 		this.color_id = color_id;
+	}
+
+	public String getColor_id() {
+		return color_id;
+	}
+	
+	private List<Integer> weekdayIds;
+
+	public List<Integer> getWeekdayIds() {
+		return weekdayIds;
+	}
+	public void setWeekdayIds(List<Integer> weekdayIds) {
+		this.weekdayIds = weekdayIds;
 	}
 }
