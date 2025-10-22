@@ -23,7 +23,7 @@ import java.sql.SQLException;
  */
 public class DBManager {
 	/** データベース接続URL */
-	private static final String JDBC_URL = "jdbc:mysql://localhost:3306/lunchclerkDX?useSSL=false&serverTimezone=Asia/Tokyo";
+	private static final String JDBC_URL = "jdbc:mysql://localhost:3306/jikanwari?useSSL=false&serverTimezone=Asia/Tokyo";
 
 	/** データベース接続ユーザー */
 	private static final String DB_USER = "root";

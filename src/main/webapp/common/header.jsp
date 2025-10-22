@@ -8,7 +8,7 @@
     私の時間割
   </div>
 
-  <a href="<%=request.getContextPath()%>/LogautServlet" class="header-button" role="button">
+  <a href="<%=request.getContextPath()%>/LogoutServlet" class="header-button" role="button">
     <img src="<%=request.getContextPath()%>/images/logout.png" class="button-icon" alt="ログアウト">
   </a>
 </header>

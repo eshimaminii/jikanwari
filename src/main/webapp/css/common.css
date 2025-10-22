@@ -8,6 +8,7 @@ body {
 	align-items: flex-start;
 	min-height: calc(100vh - 160px);
 	overflow-x: hidden;
+	background-color: #fff;
 }
 
 .site-header {
@@ -83,6 +84,9 @@ h1 {
 }
 
 .image-button {
+	appearance: none; /* ← ブラウザ標準のボタンスタイルを無効化 */
+	  -webkit-appearance: none;
+	  -moz-appearance: none;
 	display: block;
 	width: 100%;
 	max-width: 340px;
@@ -93,6 +97,7 @@ h1 {
 	background-size: contain;
 	background-repeat: no-repeat;
 	background-position: center;
+	background-color: transparent;
 	border: none;
 	cursor: pointer;
 	color: white;
@@ -109,3 +114,125 @@ h1 {
 	transform: scale(0.95);
 	filter: brightness(85%);
 }
+
+.image-button-m {
+	appearance: none; /* ← ブラウザ標準のボタンスタイルを無効化 */
+	  -webkit-appearance: none;
+	  -moz-appearance: none;
+	display: block;
+	width: 100%;
+	max-width: 340px;
+	height: 60px;
+	margin: 0 auto 20px;
+	background-image:
+		url('../images/button_m.png');
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-color: transparent;
+	border: none;
+	cursor: pointer;
+	color: white;
+	font-size: 20px;
+	font-weight: bold;
+	text-align: center;
+	line-height: 60px;
+	text-decoration: none;
+	border-radius: 8px;
+	transition: transform 0.1s ease, filter 0.1s ease;
+}
+
+.image-button-m:active {
+	transform: scale(0.95);
+	filter: brightness(85%);
+}
+
+.image-button-l {
+	appearance: none; /* ← ブラウザ標準のボタンスタイルを無効化 */
+	  -webkit-appearance: none;
+	  -moz-appearance: none;
+	display: block;
+	width: 100%;
+	max-width: 340px;
+	height: 60px;
+	margin: 0 auto 20px;
+	background-image:
+		url('../images/button_l.png');
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-color: transparent;
+	border: none;
+	cursor: pointer;
+	color: white;
+	font-size: 20px;
+	font-weight: bold;
+	text-align: center;
+	line-height: 60px;
+	text-decoration: none;
+	border-radius: 8px;
+	transition: transform 0.1s ease, filter 0.1s ease;
+}
+
+.image-button-l:active {
+	transform: scale(0.95);
+	filter: brightness(85%);
+}
+
+.image-button-p {
+	appearance: none; /* ← ブラウザ標準のボタンスタイルを無効化 */
+	  -webkit-appearance: none;
+	  -moz-appearance: none;
+	display: block;
+	width: 100%;
+	max-width: 340px;
+	height: 60px;
+	margin: 0 auto 20px;
+	background-image:
+		url('../images/button_p.png');
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-color: transparent;
+	border: none;
+	cursor: pointer;
+	color: white;
+	font-size: 20px;
+	font-weight: bold;
+	text-align: center;
+	line-height: 60px;
+	text-decoration: none;
+	border-radius: 8px;
+	transition: transform 0.1s ease, filter 0.1s ease;
+}
+
+.image-button-p:active {
+	transform: scale(0.95);
+	filter: brightness(85%);
+}
+.form-label {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+
+.form-label label {
+  font-weight: bold;
+  margin-bottom: 6px;
+  color: #333;
+}
+
+.form-label input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-label input:focus {
+  border-color: #5a8dee;
+  box-shadow: 0 0 4px rgba(90, 141, 238, 0.4);
+  outline: none;
+}
+

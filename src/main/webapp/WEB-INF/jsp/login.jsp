@@ -7,12 +7,36 @@
 <title>ログイン｜私の時間割</title>
 <link rel="stylesheet"
 	href="<%=request.getContextPath()%>/css/common.css">
-
 </head>
 <body>
 	<%@ include file="/common/header_plain.jsp"%>
 
+	<div class="container">
+		<h1>ログイン</h1>
 
+		<form method="post" action="<%=request.getContextPath()%>/LoginServlet">
+
+
+			<div class="form-label">
+				<label for="email">メールアドレス</label> <input type="email" id="email"
+					name="email" required>
+			</div>
+
+			<div class="form-label">
+				<label for="password">パスワード ※6文字以上</label> <input type="password"
+					id="password" name="password" required minlength="6">
+				<!-- 最低6文字 -->
+			</div>
+
+			<div class="button-area">
+				<button type="submit" class="image-button" role="button">ログイン</button>
+				<button type="button" class="image-button" role="button"
+					onclick="window.history.back();">戻る</button>
+
+			</div>
+
+		</form>
+	</div>
 	<%@ include file="/common/footer.jsp"%>
 </body>
 </html>

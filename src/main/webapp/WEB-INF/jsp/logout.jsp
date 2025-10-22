@@ -11,7 +11,15 @@
 </head>
 <body>
 	<%@ include file="/common/header_plain.jsp"%>
-
+<div class="container">
+		<h1>ログアウトしました</h1>
+		
+		<nav>
+			<a href="<%=request.getContextPath()%>/WelcomeServlet"
+				class="image-button" role="button">トップ</a>
+		</nav>
+		
+	</div>
 
 	<%@ include file="/common/footer.jsp"%>
 </body>
