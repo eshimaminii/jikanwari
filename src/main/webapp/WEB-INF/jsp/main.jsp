@@ -7,8 +7,7 @@
 <head>
 <meta charset="UTF-8">
 <title>メインメニュー｜私の時間割</title>
-<link rel="stylesheet"
-	href="<%=request.getContextPath()%>/css/mainMenu.css">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/css/mainMenu.css">
 </head>
 
 <body>
@@ -16,7 +15,6 @@
 
 	<header class="site-header">
 		<div class="header-container">私の時間割</div>
-
 		<a href="<%=request.getContextPath()%>/LogoutServlet"
 			class="header-button" role="button">
 			<img src="<%=request.getContextPath()%>/images/logout.png"
@@ -27,7 +25,7 @@
 	<div class="container">
 
 		<a href="<%=request.getContextPath()%>/EventAddServlet"
-			class="image-button-l" role="button">予定を入れる</a> 
+			class="image-button-l" role="button">予定を入れる</a>
 		<a href="<%=request.getContextPath()%>/WeeklyEventServlet"
 			class="image-button-l" role="button">曜日指定の予定一覧</a>
 
@@ -36,34 +34,33 @@
 		</div>
 
 		<div class="schedule-table">
-			<c:forEach begin="7" end="23" var="hour">
-				<div class="time-slot hour-start" data-time="${hour}:00">
-					<div class="time-label">${hour}</div>
-					<div class="time-line"></div>
-				</div>
-
-				<c:if test="${hour < 23}">
-					<div class="time-slot half-hour" data-time="${hour}:30">
-						<div class="time-line half"></div>
+			<div class="schedule-content">
+				<!-- 7:00〜23:00まで -->
+				<c:forEach begin="7" end="23" var="hour">
+					<div class="time-row">
+						<div class="time-label">${hour}</div>
+						<div class="time-line"></div>
+						<div class="half-line"></div>
 					</div>
-				</c:if>
-			</c:forEach>
+				</c:forEach>
 
-			<c:forEach var="event" items="${todayEvents}">
-				<c:set var="totalStartMinutes"
-					value="${event.startHour * 60 + event.startMinute}" />
-				<c:set var="offsetMinutes" value="${totalStartMinutes - 7 * 60}" />
+				<!-- イベントブロック -->
+				<c:set var="pxPerMinute" value="1" />
+				<c:forEach var="event" items="${todayEvents}">
+					<c:set var="offsetMinutes"
+						value="${(event.startHour - 7) * 60 + event.startMinute}" />
 
-				<a href="<%=request.getContextPath()%>/EventEditServlet?event_id=${event.event_id}"
-					class="event-block"
-					style="top: ${offsetMinutes * 2}px; 
-						height: ${event.durationMinutes * 2}px; 
-						background-color: ${event.color_id};">
-
-					<div class="event-title">${event.title}</div>
-				</a>
-			</c:forEach>
+					<a href="<%=request.getContextPath()%>/EventEditServlet?event_id=${event.event_id}"
+						class="event-block"
+						style="top: ${offsetMinutes * pxPerMinute}px;
+						       height: ${event.durationMinutes * pxPerMinute}px;
+						       background-color: ${event.color_id};">
+						<div class="event-title">${event.title}</div>
+					</a>
+				</c:forEach>
+			</div>
 		</div>
+
 	</div>
 
 	<%@ include file="/common/footer.jsp"%>
