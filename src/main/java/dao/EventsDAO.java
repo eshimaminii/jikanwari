@@ -5,7 +5,9 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,6 +61,38 @@ public class EventsDAO {
 
 		return events;
 	}
+	
+	public boolean insert(Event event) {
+        String sql = """
+            INSERT INTO events
+            (title, date, time, description, repeat_flag, color_id, delete_flag, user_id)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        """;
+
+        try (Connection conn = DBManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            // time カラムは startHour と startMinute から生成
+            LocalTime eventTime = LocalTime.of(event.getStartHour(), event.getStartMinute());
+
+            pstmt.setString(1, event.getTitle());
+            pstmt.setDate(2, java.sql.Date.valueOf(event.getDate()));
+            pstmt.setTime(3, Time.valueOf(eventTime));
+            pstmt.setString(4, event.getDescription());
+            pstmt.setInt(5, event.isRepeat_flag() ? 1 : 0);
+            pstmt.setString(6, event.getColor_id());
+            pstmt.setInt(7, event.isDelete_flag() ? 1 : 0);
+            pstmt.setString(8, event.getUser_id());
+
+            int result = pstmt.executeUpdate();
+            return result == 1;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 	
 	public boolean update(Event event) {
 		try (Connection conn = DBManager.getConnection()) {

@@ -14,9 +14,8 @@ public class Event {
 	private int startHour; //開始時
 	private int startMinute;//開始分
 	private int durationMinutes; //継続時間（分）
+	private String user_id;
 	
-	
-
 
 	public Event() {}
 	
@@ -106,5 +105,13 @@ public class Event {
 	}
 	public void setWeekdayIds(List<Integer> weekdayIds) {
 		this.weekdayIds = weekdayIds;
+	}
+
+	public String getUser_id() {
+		return user_id;
+	}
+	
+	public void setUser_id(String user_id) {
+		this.user_id = user_id;
 	}
 }
