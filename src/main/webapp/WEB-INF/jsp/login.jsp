@@ -29,7 +29,7 @@
 			</div>
 
 			<div class="button-area">
-				<button type="submit" class="image-button" role="button">ログイン</button>
+				<button type="submit" class="image-button-p" role="button">ログイン</button>
 				<button type="button" class="image-button" role="button"
 					onclick="window.history.back();">戻る</button>
 

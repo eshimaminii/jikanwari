@@ -122,7 +122,7 @@ public class EventAddServlet extends HttpServlet {
         if ("submit".equals(action)) {
             Event savedEvent = (Event) session.getAttribute("event");
             @SuppressWarnings("unchecked")
-            List<Integer> weekdayIds = (List<Integer>) session.getAttribute("weekdayIds");
+            List<Integer> weekdayIds = (List<Integer>) session.getAttribute("weekdayIds"); // ★ 取り出す
 
             if (savedEvent == null) {
                 request.setAttribute("error", "セッションが切れました。再度入力してください。");
@@ -133,22 +133,20 @@ public class EventAddServlet extends HttpServlet {
             boolean result = false;
             try {
                 EventService service = new EventService();
-                // ✅ 曜日データも渡す
-                result = service.addEvent(savedEvent, loginUser.getUserId(), weekdayIds);
+                result = service.addEvent(savedEvent, loginUser.getUserId(), weekdayIds); // ★ 渡す
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
             if (result) {
                 session.removeAttribute("event");
-                session.removeAttribute("weekdayIds");
-                RequestDispatcher dispatcher =
-                        request.getRequestDispatcher("/WEB-INF/jsp/eventAddComplete.jsp");
-                dispatcher.forward(request, response);
+                session.removeAttribute("weekdayIds"); // ★ 片付け
+                request.getRequestDispatcher("/WEB-INF/jsp/eventAddComplete.jsp").forward(request, response);
             } else {
                 request.setAttribute("error", "登録に失敗しました。");
                 doGet(request, response);
             }
         }
+
     }
 }

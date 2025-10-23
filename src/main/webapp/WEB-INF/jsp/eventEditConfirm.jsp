@@ -62,7 +62,7 @@
         </c:forEach>
 
         <div class="button-area" style="text-align:center; margin-top:30px;">
-            <button type="button" class="image-button" onclick="history.back()">修正</button>
+            <button type="button" class="image-button" onclick="history.back()">戻る</button>
             <button type="submit" class="image-button">登録</button>
         </div>
     </form>

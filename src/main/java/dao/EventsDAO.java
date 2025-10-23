@@ -72,61 +72,67 @@ public class EventsDAO {
 	}
 
 	
-	public boolean insert(Event event) {
-        String sql = """
-            INSERT INTO events
-            (title, date, time, description, repeat_flag, color_id, delete_flag, user_id)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        """;
+	public Integer insert(Event event) {
+	    String sql = """
+	        INSERT INTO events
+	        (title, date, time, description, repeat_flag, color_id, delete_flag, user_id)
+	        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+	    """;
 
-        try (Connection conn = DBManager.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	    try (Connection conn = DBManager.getConnection();
+	         PreparedStatement pstmt = conn.prepareStatement(sql, java.sql.Statement.RETURN_GENERATED_KEYS)) {
 
-            // time カラムは startHour と startMinute から生成
-            LocalTime eventTime = LocalTime.of(event.getStartHour(), event.getStartMinute());
+	        LocalTime eventTime = LocalTime.of(event.getStartHour(), event.getStartMinute());
 
-            pstmt.setString(1, event.getTitle());
-            pstmt.setDate(2, java.sql.Date.valueOf(event.getDate()));
-            pstmt.setTime(3, Time.valueOf(eventTime));
-            pstmt.setString(4, event.getDescription());
-            pstmt.setInt(5, event.isRepeat_flag() ? 1 : 0);
-            pstmt.setString(6, event.getColor_id());
-            pstmt.setInt(7, event.isDelete_flag() ? 1 : 0);
-            pstmt.setString(8, event.getUser_id());
+	        pstmt.setString(1, event.getTitle());
+	        pstmt.setDate(2, java.sql.Date.valueOf(event.getDate()));
+	        pstmt.setTime(3, Time.valueOf(eventTime));
+	        pstmt.setString(4, event.getDescription());
+	        pstmt.setInt(5, event.isRepeat_flag() ? 1 : 0);
+	        pstmt.setString(6, event.getColor_id());
+	        pstmt.setInt(7, event.isDelete_flag() ? 1 : 0);
+	        pstmt.setString(8, event.getUser_id());
 
-            int result = pstmt.executeUpdate();
-            return result == 1;
+	        int result = pstmt.executeUpdate();
+	        if (result != 1) return null;
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
+	        try (ResultSet keys = pstmt.getGeneratedKeys()) {
+	            if (keys.next()) {
+	                return keys.getInt(1);   // ← ここで event_id を返す！
+	            }
+	        }
+	    } catch (SQLException e) {
+	    	System.out.println("❌ 曜日登録中にエラー発生！");
+	        e.printStackTrace();
+	    }
+	    return null;
+	}
+
 
 	
 	public boolean update(Event event) {
-		try (Connection conn = DBManager.getConnection()) {
-			String sql = "UPDATE events SET title=?, date=?, time=?, description=?, repeat_flag=?, color_id=?, duration_minutes=? WHERE event_id=?";
-			try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-			    LocalTime time = LocalTime.of(event.getStartHour(), event.getStartMinute());
-			    stmt.setString(1, event.getTitle());
-			    stmt.setDate(2, Date.valueOf(event.getDate()));
-			    stmt.setTime(3, Time.valueOf(time));
-			    stmt.setString(4, event.getDescription());
-			    stmt.setBoolean(5, event.isRepeat_flag());
-			    stmt.setString(6, event.getColor_id());
-			    stmt.setInt(7, event.getDurationMinutes());
-			    stmt.setInt(8, event.getEvent_id());
-			    stmt.executeUpdate();
+	    String sql = "UPDATE events SET title=?, date=?, time=?, description=?, repeat_flag=?, color_id=?, duration_minutes=? WHERE event_id=?";
+	    try (Connection conn = DBManager.getConnection();
+	         PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-				int rows = stmt.executeUpdate();
-				return rows > 0;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
+	        LocalTime time = LocalTime.of(event.getStartHour(), event.getStartMinute());
+	        stmt.setString(1, event.getTitle());
+	        stmt.setDate(2, Date.valueOf(event.getDate()));
+	        stmt.setTime(3, Time.valueOf(time));
+	        stmt.setString(4, event.getDescription());
+	        stmt.setBoolean(5, event.isRepeat_flag());
+	        stmt.setString(6, event.getColor_id());
+	        stmt.setInt(7, event.getDurationMinutes());
+	        stmt.setInt(8, event.getEvent_id());
+
+	        int rows = stmt.executeUpdate();  
+	        return rows > 0;
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return false;
+	    }
 	}
+
 	
 	public Event findById(int eventId) {
 	    Event event = null;

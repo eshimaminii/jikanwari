@@ -71,12 +71,16 @@ public class WeeklyEventEditServlet extends HttpServlet {
             return;
         }
 
-        // ===== 完了処理 =====
+     // ===== 完了処理 =====
         if ("submit".equals(action)) {
             int eventId = (int) session.getAttribute("event_id");
             String[] selectedIds = (String[]) session.getAttribute("selectedWeekdayIds");
 
-            boolean result = service.updateWeekdays(eventId, selectedIds);
+            // ★ 曜日が空かどうかチェック
+            boolean hasWeekdays = selectedIds != null && selectedIds.length > 0;
+
+            // ★ repeat_flagの整合性も同時に更新！
+            boolean result = service.updateWeekdaysAndRepeatFlag(eventId, selectedIds, hasWeekdays);
 
             session.removeAttribute("event_id");
             session.removeAttribute("selectedWeekdayIds");
@@ -90,5 +94,6 @@ public class WeeklyEventEditServlet extends HttpServlet {
                 rd.forward(request, response);
             }
         }
+
     }
 }

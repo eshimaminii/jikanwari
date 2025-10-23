@@ -1,8 +1,11 @@
 package service;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
 
+import dao.DBManager;
 import dao.EventsDAO;
 import dao.WeekdayDAO;
 import model.Event;
@@ -73,4 +76,34 @@ public class WeeklyEventService {
             return false;
         }
     }
+    
+    public boolean updateWeekdaysAndRepeatFlag(int eventId, String[] weekdayIds, boolean hasWeekdays) {
+        EventsDAO dao = new EventsDAO();
+        dao.deleteWeekdays(eventId);
+
+        // 曜日がある場合のみ insert
+        if (hasWeekdays && weekdayIds != null) {
+            List<Integer> weekdayList = new ArrayList<>();
+            for (String id : weekdayIds) {
+                weekdayList.add(Integer.parseInt(id));
+            }
+            dao.insertWeekdays(eventId, weekdayList);
+        }
+
+        // ★ repeat_flagを更新（曜日があれば1、なければ0）
+        try (Connection conn = DBManager.getConnection()) {
+            String sql = "UPDATE events SET repeat_flag = ? WHERE event_id = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setInt(1, hasWeekdays ? 1 : 0);
+                stmt.setInt(2, eventId);
+                stmt.executeUpdate();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        return true;
+    }
+
 }

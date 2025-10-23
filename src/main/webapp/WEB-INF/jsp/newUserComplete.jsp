@@ -16,7 +16,7 @@
 		
 		<nav>
 			<a href="<%=request.getContextPath()%>/LoginServlet"
-				class="image-button" role="button">ログイン</a>
+				class="image-button-p" role="button">ログイン</a>
 			<a href="<%=request.getContextPath()%>/WelcomeServlet"
 				class="image-button" role="button">トップ</a>
 		</nav>

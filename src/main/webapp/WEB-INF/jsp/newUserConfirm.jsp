@@ -19,7 +19,7 @@
 			<p>
 				メールアドレス：<%=request.getAttribute("email")%></p>
 			<p>
-				パスワード：<%=request.getAttribute("password")%></p>
+				パスワード：******</p>
 			<p>
 				ニックネーム：<%=request.getAttribute("name")%></p>
 			<p>
@@ -36,7 +36,7 @@
 
 			<div class="button-area">
 				<button type="button" class="image-button" onclick="history.back()">修正</button>
-				<button type="submit" name="action" value="submit" class="image-button">登録</button>
+				<button type="submit" name="action" value="submit" class="image-button-p">登録</button>
 
 			</div>
 		</form>
