@@ -16,51 +16,61 @@ import model.Event;
 public class EventsDAO {
 
 	public List<Event> findByDate(String userId, LocalDate date) {
-		List<Event> events = new ArrayList<>();
-		String sql = """
-				SELECT 
-				    event_id, title, date, description, repeat_flag, 
-				    color_id, delete_flag, TIME_FORMAT(time, '%H') AS start_hour, 
-				    TIME_FORMAT(time, '%i') AS start_minute
-				FROM events
-				WHERE user_id = ? 
-				  AND date = ?
-				  AND delete_flag = 0
-				ORDER BY time;
-				""";
+	    List<Event> events = new ArrayList<>();
+	    String sql = """
+	        SELECT 
+	            e.event_id, e.title, e.date, e.description, e.repeat_flag,
+	            e.color_id, e.delete_flag, 
+	            TIME_FORMAT(e.time, '%H') AS start_hour, 
+	            TIME_FORMAT(e.time, '%i') AS start_minute
+	        FROM events e
+	        LEFT JOIN event_weekdays ew ON e.event_id = ew.event_id
+	        LEFT JOIN weekdays w ON ew.weekday_id = w.weekday_id
+	        WHERE e.user_id = ?
+	          AND e.delete_flag = 0
+	          AND (
+	              e.date = ?                           -- 通常の単発予定
+	              OR (e.repeat_flag = 1 AND w.weekday_id = ?)  -- 曜日繰り返し予定
+	          )
+	        ORDER BY e.time;
+	    """;
 
-		try (Connection conn = DBManager.getConnection();
-				PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	    try (Connection conn = DBManager.getConnection();
+	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-			pstmt.setString(1, userId);
-			pstmt.setDate(2, java.sql.Date.valueOf(date));
+	        pstmt.setString(1, userId);
+	        pstmt.setDate(2, java.sql.Date.valueOf(date));
 
-			ResultSet rs = pstmt.executeQuery();
+	        // 今日の曜日（1=日曜, 7=土曜）
+	        int dayOfWeek = date.getDayOfWeek().getValue() + 1;
+	        if (dayOfWeek == 8) dayOfWeek = 1; // Javaは月曜=1だから補正
+	        pstmt.setInt(3, dayOfWeek);
 
-			while (rs.next()) {
-				Event e = new Event();
-				e.setEvent_id(rs.getInt("event_id"));
-				e.setTitle(rs.getString("title"));
-				e.setDate(rs.getDate("date").toLocalDate());
-				e.setDescription(rs.getString("description"));
-				e.setRepeat_flag(rs.getInt("repeat_flag") == 1);
-				e.setColor_id(rs.getString("color_id"));
-				e.setDelete_flag(rs.getInt("delete_flag") == 1);
-				e.setStartHour(rs.getInt("start_hour"));
-				e.setStartMinute(rs.getInt("start_minute"));
+	        ResultSet rs = pstmt.executeQuery();
 
-				// 仮で1時間固定（後でカラム追加して変更可）
-				e.setDurationMinutes(60);
+	        while (rs.next()) {
+	            Event e = new Event();
+	            e.setEvent_id(rs.getInt("event_id"));
+	            e.setTitle(rs.getString("title"));
+	            e.setDate(rs.getDate("date").toLocalDate());
+	            e.setDescription(rs.getString("description"));
+	            e.setRepeat_flag(rs.getInt("repeat_flag") == 1);
+	            e.setColor_id(rs.getString("color_id"));
+	            e.setDelete_flag(rs.getInt("delete_flag") == 1);
+	            e.setStartHour(rs.getInt("start_hour"));
+	            e.setStartMinute(rs.getInt("start_minute"));
+	            e.setDurationMinutes(60); // 仮で固定
 
-				events.add(e);
-			}
+	            events.add(e);
+	        }
 
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
 
-		return events;
+	    return events;
 	}
+
 	
 	public boolean insert(Event event) {
         String sql = """
