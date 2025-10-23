@@ -9,7 +9,9 @@ import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import model.Event;
 
@@ -20,7 +22,7 @@ public class EventsDAO {
 	    String sql = """
 	        SELECT 
 	            e.event_id, e.title, e.date, e.description, e.repeat_flag,
-	            e.color_id, e.delete_flag, 
+	            e.color_id, e.delete_flag, e.duration_minutes,
 	            TIME_FORMAT(e.time, '%H') AS start_hour, 
 	            TIME_FORMAT(e.time, '%i') AS start_minute
 	        FROM events e
@@ -59,7 +61,8 @@ public class EventsDAO {
 	            e.setDelete_flag(rs.getInt("delete_flag") == 1);
 	            e.setStartHour(rs.getInt("start_hour"));
 	            e.setStartMinute(rs.getInt("start_minute"));
-	            e.setDurationMinutes(60); // 仮で固定
+	            e.setDurationMinutes(rs.getInt("duration_minutes"));
+
 
 	            events.add(e);
 	        }
@@ -275,6 +278,42 @@ public class EventsDAO {
 	    return id;
 	}
 
+	public Map<String, List<Event>> getGroupedEvents(String userId) {
+	    Map<String, List<Event>> groupedEvents = new LinkedHashMap<>();
+
+	    String sql = """
+	        SELECT e.event_id, e.title, w.weekday
+	        FROM events e
+	        JOIN event_weekdays ew ON e.event_id = ew.event_id
+	        JOIN weekdays w ON ew.weekday_id = w.weekday_id
+	        WHERE e.user_id = ? AND e.repeat_flag = 1
+	        ORDER BY w.weekday_id
+	    """;
+
+	    try (Connection conn = DBManager.getConnection();
+	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+	        pstmt.setString(1, userId);
+
+	        try (ResultSet rs = pstmt.executeQuery()) {
+	            while (rs.next()) {
+	                String weekday = rs.getString("weekday");
+
+	                Event event = new Event();
+	                event.setEvent_id(rs.getInt("event_id"));
+	                event.setTitle(rs.getString("title"));
+
+	                // まだその曜日のリストがない場合は新規作成
+	                groupedEvents.computeIfAbsent(weekday, k -> new ArrayList<>()).add(event);
+	            }
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+
+	    return groupedEvents;
+	}
 
 
 }

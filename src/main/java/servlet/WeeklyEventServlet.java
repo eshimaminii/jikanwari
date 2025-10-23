@@ -41,6 +41,12 @@ public class WeeklyEventServlet extends HttpServlet {
             Map<String, List<Event>> groupedEvents =
                     displayService.getGroupedRepeatedEvents(loginUser.getUserId());
 
+
+            // 🌈 各キーを出力して中身確認！
+            for (String key : groupedEvents.keySet()) {
+                System.out.println("🌈 weekday.key = " + key);
+            }
+
             // JSPへ渡す
             request.setAttribute("groupedEvents", groupedEvents);
         } catch (Exception e) {

@@ -7,9 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import dao.EventsDAO;
-import dao.WeekdayDAO;
 import model.Event;
-import model.Weekday;
 
 public class WeeklyDisplayService {
 
@@ -25,33 +23,54 @@ public class WeeklyDisplayService {
     }
     
     public Map<String, List<Event>> getGroupedRepeatedEvents(String userId) {
-        EventsDAO dao = new EventsDAO();
-        List<Event> events = dao.findRepeatedEvents(userId); // repeat_flag=1の予定
-
-        WeekdayDAO weekdayDao = new WeekdayDAO();
-        Map<Integer, String> weekdayNames = new HashMap<>();
-        for (Weekday w : weekdayDao.findAll()) {
-            weekdayNames.put(w.getWeekday_id(), w.getWeekday());
-        }
-
-        // 曜日ごとのリスト作成
         Map<String, List<Event>> grouped = new LinkedHashMap<>();
-        for (Weekday w : weekdayDao.findAll()) {
-            grouped.put(w.getWeekday(), new ArrayList<>());
-        }
 
-        // イベントを曜日ごとに振り分け
-        for (Event e : events) {
-            List<Integer> weekdays = dao.findWeekdaysByEventId(e.getEvent_id());
-            for (int id : weekdays) {
-                String name = weekdayNames.get(id);
-                grouped.get(name).add(e);
+        EventsDAO dao = new EventsDAO();
+        
+        // すでに取得している「曜日ごと」リストをもとに
+        Map<String, List<Event>> original = dao.getGroupedEvents(userId);
+
+        // 「イベントID → 登場した曜日の数」を数えるマップ
+        Map<Integer, Integer> eventCount = new HashMap<>();
+        for (List<Event> list : original.values()) {
+            for (Event e : list) {
+                eventCount.put(e.getEvent_id(), eventCount.getOrDefault(e.getEvent_id(), 0) + 1);
             }
         }
 
-        // 空の曜日を削除
-        grouped.entrySet().removeIf(entry -> entry.getValue().isEmpty());
+     // 「毎日」グループを新しく作る
+        List<Event> everydayEvents = new ArrayList<>();
+
+        // 曜日ごとのループ
+        for (Map.Entry<String, List<Event>> entry : original.entrySet()) {
+            String weekday = entry.getKey();
+            List<Event> filtered = new ArrayList<>();
+
+            for (Event e : entry.getValue()) {
+                if (eventCount.get(e.getEvent_id()) == 7) {
+                    // 7曜日すべてに存在するイベントなら「毎日」へ（★重複を防止）
+                    boolean alreadyExists = everydayEvents.stream()
+                            .anyMatch(ev -> ev.getEvent_id() == e.getEvent_id());
+                    if (!alreadyExists) {
+                        everydayEvents.add(e);
+                    }
+                } else {
+                    filtered.add(e);
+                }
+            }
+
+            if (!filtered.isEmpty()) {
+                grouped.put(weekday, filtered);
+            }
+        }
+
+        // 最後に「毎日」グループを先頭に追加
+        if (!everydayEvents.isEmpty()) {
+            grouped.put("毎日", everydayEvents);
+        }
+
 
         return grouped;
     }
+
 }

@@ -24,7 +24,8 @@
 		<form action="WeeklyEventEditServlet" method="post">
 			<input type="hidden" name="action" value="submit">
 			<p style="margin-top:20px;">
-				<button type="submit" class="image-button">完了</button>
+			<button type="button" class="image-button" onclick="history.back()">戻る</button>
+				<button type="submit" class="image-button">登録</button>
 			</p>
 		</form>
 	</div>
