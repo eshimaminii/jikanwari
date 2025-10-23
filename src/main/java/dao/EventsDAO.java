@@ -210,5 +210,55 @@ public class EventsDAO {
 
 	    return result;
 	}
+	
+	// --- 繰り返しイベント一覧取得 ---
+	public List<Event> findRepeatedEvents(String userId) {
+	    List<Event> events = new ArrayList<>();
+	    String sql = """
+	        SELECT event_id, title, date, time, description, repeat_flag, color_id
+	        FROM events
+	        WHERE user_id = ? AND repeat_flag = 1 AND delete_flag = 0
+	        ORDER BY date, time
+	    """;
+
+	    try (Connection conn = DBManager.getConnection();
+	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+	        pstmt.setString(1, userId);
+	        ResultSet rs = pstmt.executeQuery();
+
+	        while (rs.next()) {
+	            Event e = new Event();
+	            e.setEvent_id(rs.getInt("event_id"));
+	            e.setTitle(rs.getString("title"));
+	            e.setDate(rs.getDate("date").toLocalDate());
+	            e.setDescription(rs.getString("description"));
+	            e.setRepeat_flag(true);
+	            e.setColor_id(rs.getString("color_id"));
+	            events.add(e);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+
+	    return events;
+	}
+	
+	public int getLastInsertedId() {
+	    int id = -1;
+	    String sql = "SELECT LAST_INSERT_ID()";
+	    try (Connection conn = DBManager.getConnection();
+	         PreparedStatement pstmt = conn.prepareStatement(sql);
+	         ResultSet rs = pstmt.executeQuery()) {
+	        if (rs.next()) {
+	            id = rs.getInt(1);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    return id;
+	}
+
+
 
 }

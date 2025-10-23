@@ -27,4 +27,25 @@ public class WeekdayDAO {
 		}
 		return list;
 	}
+	
+	public Weekday findById(int weekdayId) {
+	    Weekday weekday = null;
+	    try (Connection conn = DBManager.getConnection()) {
+	        String sql = "SELECT weekday_id, weekday FROM weekdays WHERE weekday_id = ?";
+	        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+	            stmt.setInt(1, weekdayId);
+	            try (ResultSet rs = stmt.executeQuery()) {
+	                if (rs.next()) {
+	                    weekday = new Weekday();
+	                    weekday.setWeekday_id(rs.getInt("weekday_id"));
+	                    weekday.setWeekday(rs.getString("weekday"));
+	                }
+	            }
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    return weekday;
+	}
+
 }

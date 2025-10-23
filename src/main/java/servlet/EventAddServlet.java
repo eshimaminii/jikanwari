@@ -2,6 +2,7 @@ package servlet;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.servlet.RequestDispatcher;
@@ -79,6 +80,17 @@ public class EventAddServlet extends HttpServlet {
                 String colorId = request.getParameter("color_id");
                 String repeatFlagStr = request.getParameter("repeat_flag");
 
+                // ✅ 曜日チェックボックス取得
+                String[] weekdayIdsStr = request.getParameterValues("weekday_ids");
+                List<Integer> weekdayIds = new ArrayList<>();
+                if (weekdayIdsStr != null) {
+                    for (String idStr : weekdayIdsStr) {
+                        weekdayIds.add(Integer.parseInt(idStr));
+                    }
+                }
+                session.setAttribute("weekdayIds", weekdayIds);
+
+                // イベントオブジェクト生成
                 Event event = new Event();
                 event.setTitle(title);
                 event.setDate(LocalDate.parse(dateStr));
@@ -109,6 +121,9 @@ public class EventAddServlet extends HttpServlet {
 
         if ("submit".equals(action)) {
             Event savedEvent = (Event) session.getAttribute("event");
+            @SuppressWarnings("unchecked")
+            List<Integer> weekdayIds = (List<Integer>) session.getAttribute("weekdayIds");
+
             if (savedEvent == null) {
                 request.setAttribute("error", "セッションが切れました。再度入力してください。");
                 doGet(request, response);
@@ -118,13 +133,15 @@ public class EventAddServlet extends HttpServlet {
             boolean result = false;
             try {
                 EventService service = new EventService();
-                result = service.addEvent(savedEvent, loginUser.getUserId());
+                // ✅ 曜日データも渡す
+                result = service.addEvent(savedEvent, loginUser.getUserId(), weekdayIds);
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
             if (result) {
                 session.removeAttribute("event");
+                session.removeAttribute("weekdayIds");
                 RequestDispatcher dispatcher =
                         request.getRequestDispatcher("/WEB-INF/jsp/eventAddComplete.jsp");
                 dispatcher.forward(request, response);
