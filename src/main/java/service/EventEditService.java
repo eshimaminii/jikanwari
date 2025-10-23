@@ -14,4 +14,14 @@ public class EventEditService {
 		}
 		return updated;
 	}
+	
+	 public Event findEventById(int eventId) {
+	        EventsDAO dao = new EventsDAO();
+	        return dao.findById(eventId);
+	    }
+	 
+	 public boolean deleteEvent(int eventId) {
+	        EventsDAO dao = new EventsDAO();
+	        return dao.deleteEvent(eventId);
+	    }
 }

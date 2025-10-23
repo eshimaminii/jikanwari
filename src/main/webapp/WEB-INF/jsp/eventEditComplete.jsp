@@ -11,7 +11,15 @@
 </head>
 <body>
 	<%@ include file="/common/header.jsp"%>
-
+<div class="container">
+		<h1>登録完了</h1>
+		
+		<nav>
+			<a href="<%=request.getContextPath()%>/MainServlet"
+				class="image-button-l" role="button">メインメニュー</a>
+			
+		</nav>
+</div>
 
 	<%@ include file="/common/footer.jsp"%>
 </body>

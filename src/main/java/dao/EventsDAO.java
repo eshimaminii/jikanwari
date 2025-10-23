@@ -192,4 +192,23 @@ public class EventsDAO {
 			e.printStackTrace();
 		}
 	}
+	
+	public boolean deleteEvent(int eventId) {
+	    boolean result = false;
+	    String sql = "UPDATE events SET delete_flag = 1 WHERE event_id = ?";
+
+	    try (Connection conn = DBManager.getConnection();
+	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+	        pstmt.setInt(1, eventId);
+	        int updated = pstmt.executeUpdate();
+	        if (updated > 0) result = true;
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+
+	    return result;
+	}
+
 }
