@@ -21,10 +21,48 @@ import model.User;
 import model.Weekday;
 import service.EventService;
 
+/**
+ * {@code EventAddServlet} クラスは、
+ * 新規イベント登録フォームの表示・確認・登録処理を制御するサーブレットです。<br>
+ * カラー選択・曜日設定・繰り返し登録など、予定追加時の一連の操作を担当します。
+ *
+ * <p>主な処理の流れ：</p>
+ * <ol>
+ *   <li><b>GET</b>：カラー・曜日リストを取得し、登録フォームを表示</li>
+ *   <li><b>POST (confirm)</b>：フォーム入力内容をセッションに保存し、確認画面へ遷移</li>
+ *   <li><b>POST (submit)</b>：確認内容をDBへ登録し、完了画面へ遷移</li>
+ * </ol>
+ *
+ * <p>使用JSP：</p>
+ * <ul>
+ *   <li>{@code /WEB-INF/jsp/eventAddForm.jsp}</li>
+ *   <li>{@code /WEB-INF/jsp/eventAddConfirm.jsp}</li>
+ *   <li>{@code /WEB-INF/jsp/eventAddComplete.jsp}</li>
+ * </ul>
+ *
+ * <p>使用DAO／Service：</p>
+ * <ul>
+ *   <li>{@link dao.ColorDAO}</li>
+ *   <li>{@link dao.WeekdayDAO}</li>
+ *   <li>{@link service.EventService}</li>
+ * </ul>
+ *
+ * @author 
+ * @version 1.0
+ */
 @WebServlet("/EventAddServlet")
 public class EventAddServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
+    /**
+     * GETリクエスト処理。<br>
+     * カラー・曜日リストをデータベースから取得し、登録フォームへ転送します。
+     *
+     * @param request  クライアントからのHTTPリクエスト
+     * @param response サーバーからのHTTPレスポンス
+     * @throws ServletException サーブレットエラー発生時
+     * @throws IOException      入出力エラー発生時
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -46,11 +84,20 @@ public class EventAddServlet extends HttpServlet {
             request.setAttribute("error", "初期データの取得に失敗しました。");
         }
 
-        // 入力フォームへ
+        // 入力フォームへフォワード
         RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/eventAddForm.jsp");
         dispatcher.forward(request, response);
     }
 
+    /**
+     * POSTリクエスト処理。<br>
+     * actionパラメータに応じて、<b>確認画面</b>または<b>登録処理</b>を実行します。
+     *
+     * @param request  クライアントからのHTTPリクエスト
+     * @param response サーバーからのHTTPレスポンス
+     * @throws ServletException サーブレットエラー発生時
+     * @throws IOException      入出力エラー発生時
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -68,6 +115,7 @@ public class EventAddServlet extends HttpServlet {
             return;
         }
 
+        /* ---------- 確認画面処理 ---------- */
         if ("confirm".equals(action)) {
             try {
                 // 入力値取得
@@ -80,7 +128,7 @@ public class EventAddServlet extends HttpServlet {
                 String colorId = request.getParameter("color_id");
                 String repeatFlagStr = request.getParameter("repeat_flag");
 
-                // ✅ 曜日チェックボックス取得
+                // 曜日チェックボックス取得
                 String[] weekdayIdsStr = request.getParameterValues("weekday_ids");
                 List<Integer> weekdayIds = new ArrayList<>();
                 if (weekdayIdsStr != null) {
@@ -105,7 +153,7 @@ public class EventAddServlet extends HttpServlet {
                 // セッションに保存
                 session.setAttribute("event", event);
 
-                // 確認画面へ
+                // 確認画面へフォワード
                 RequestDispatcher dispatcher =
                         request.getRequestDispatcher("/WEB-INF/jsp/eventAddConfirm.jsp");
                 dispatcher.forward(request, response);
@@ -114,15 +162,16 @@ public class EventAddServlet extends HttpServlet {
             } catch (Exception e) {
                 e.printStackTrace();
                 request.setAttribute("error", "入力内容に誤りがあります。");
-                doGet(request, response); // 再読み込みしてフォームに戻す
+                doGet(request, response); // 再表示
                 return;
             }
         }
 
+        /* ---------- 登録処理 ---------- */
         if ("submit".equals(action)) {
             Event savedEvent = (Event) session.getAttribute("event");
             @SuppressWarnings("unchecked")
-            List<Integer> weekdayIds = (List<Integer>) session.getAttribute("weekdayIds"); // ★ 取り出す
+            List<Integer> weekdayIds = (List<Integer>) session.getAttribute("weekdayIds");
 
             if (savedEvent == null) {
                 request.setAttribute("error", "セッションが切れました。再度入力してください。");
@@ -133,20 +182,22 @@ public class EventAddServlet extends HttpServlet {
             boolean result = false;
             try {
                 EventService service = new EventService();
-                result = service.addEvent(savedEvent, loginUser.getUserId(), weekdayIds); // ★ 渡す
+                result = service.addEvent(savedEvent, loginUser.getUserId(), weekdayIds);
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
             if (result) {
+                // セッション後片付け
                 session.removeAttribute("event");
-                session.removeAttribute("weekdayIds"); // ★ 片付け
+                session.removeAttribute("weekdayIds");
+
+                // 完了画面へ
                 request.getRequestDispatcher("/WEB-INF/jsp/eventAddComplete.jsp").forward(request, response);
             } else {
                 request.setAttribute("error", "登録に失敗しました。");
                 doGet(request, response);
             }
         }
-
     }
 }

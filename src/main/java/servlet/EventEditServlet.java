@@ -19,18 +19,51 @@ import model.Event;
 import model.Weekday;
 import service.EventEditService;
 
+/**
+ * {@code EventEditServlet} クラスは、
+ * イベントの編集フォーム表示・確認・更新処理を制御するサーブレットです。<br>
+ * DAO層（{@link dao.EventsDAO}, {@link dao.ColorDAO}, {@link dao.WeekdayDAO}）および
+ * サービス層（{@link service.EventEditService}）と連携して、
+ * 入力内容の検証・再表示・更新登録を実行します。
+ *
+ * <p>主な処理の流れ：</p>
+ * <ol>
+ *   <li><b>GET</b>：既存のイベント情報を取得し、編集フォームを表示</li>
+ *   <li><b>POST(confirm)</b>：入力内容を確認画面に渡す</li>
+ *   <li><b>POST(submit)</b>：編集内容をデータベースに更新</li>
+ * </ol>
+ *
+ * <p>使用JSP：</p>
+ * <ul>
+ *   <li>{@code /WEB-INF/jsp/eventEditForm.jsp}</li>
+ *   <li>{@code /WEB-INF/jsp/eventEditConfirm.jsp}</li>
+ *   <li>{@code /WEB-INF/jsp/eventEditComplete.jsp}</li>
+ * </ul>
+ *
+ * @author 
+ * @version 1.0
+ */
 @WebServlet("/EventEditServlet")
 public class EventEditServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    // 編集フォーム表示
+    /**
+     * GETリクエスト処理。<br>
+     * 指定されたイベントIDをもとに既存データを取得し、編集フォームを表示します。
+     *
+     * @param request  クライアントからのHTTPリクエスト
+     * @param response サーバーからのHTTPレスポンス
+     * @throws ServletException サーブレット処理中にエラーが発生した場合
+     * @throws IOException 入出力エラーが発生した場合
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         request.setCharacterEncoding("UTF-8");
-
         String eventIdStr = request.getParameter("event_id");
+
+        // イベントIDが指定されていない場合はメイン画面へ戻る
         if (eventIdStr == null || eventIdStr.isEmpty()) {
             response.sendRedirect("mainMenu.jsp");
             return;
@@ -38,16 +71,19 @@ public class EventEditServlet extends HttpServlet {
 
         int eventId = Integer.parseInt(eventIdStr);
 
+        // イベント情報と関連データを取得
         EventsDAO dao = new EventsDAO();
         Event event = dao.findById(eventId);
         List<Integer> weekdayIds = dao.findWeekdaysByEventId(eventId);
         event.setWeekdayIds(weekdayIds);
 
+        // カラー・曜日データも取得
         ColorDAO colorDao = new ColorDAO();
         WeekdayDAO weekdayDao = new WeekdayDAO();
         List<Color> colorList = colorDao.findAll();
         List<Weekday> weekdayList = weekdayDao.findAll();
 
+        // JSPへ渡す
         request.setAttribute("event", event);
         request.setAttribute("colorList", colorList);
         request.setAttribute("weekdayList", weekdayList);
@@ -55,7 +91,15 @@ public class EventEditServlet extends HttpServlet {
         request.getRequestDispatcher("/WEB-INF/jsp/eventEditForm.jsp").forward(request, response);
     }
 
-    // 編集確認＆登録
+    /**
+     * POSTリクエスト処理。<br>
+     * 入力された値をもとに、確認画面または更新処理を実行します。
+     *
+     * @param request  クライアントからのHTTPリクエスト
+     * @param response サーバーからのHTTPレスポンス
+     * @throws ServletException サーブレット処理中にエラーが発生した場合
+     * @throws IOException 入出力エラーが発生した場合
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -63,49 +107,37 @@ public class EventEditServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         String action = request.getParameter("action");
 
+        // 確認 or 更新のみを受け付ける
         if ("confirm".equals(action) || "submit".equals(action)) {
 
             int eventId = Integer.parseInt(request.getParameter("event_id"));
-
-            // 既存イベントを取得（null対策）
             EventsDAO dao = new EventsDAO();
             Event existingEvent = dao.findById(eventId);
 
+            // イベント存在チェック
             if (existingEvent == null) {
                 request.setAttribute("error", "該当するイベントが見つかりませんでした。");
                 request.getRequestDispatcher("/WEB-INF/jsp/eventEditForm.jsp").forward(request, response);
                 return;
             }
 
-            // 新しいイベントオブジェクト作成
+            // 新しいイベントオブジェクト作成（入力内容を反映）
             Event event = new Event();
             event.setEvent_id(eventId);
 
-            // ✅ タイトル（空白対策）
+            // タイトル
             String title = request.getParameter("title");
-            if (title != null && !title.isEmpty()) {
-                event.setTitle(title);
-            } else {
-                event.setTitle(existingEvent.getTitle());
-            }
+            event.setTitle((title != null && !title.isEmpty()) ? title : existingEvent.getTitle());
 
-            // ✅ 説明
+            // 説明
             String description = request.getParameter("description");
-            if (description != null && !description.isEmpty()) {
-                event.setDescription(description);
-            } else {
-                event.setDescription(existingEvent.getDescription());
-            }
+            event.setDescription((description != null && !description.isEmpty()) ? description : existingEvent.getDescription());
 
-            // ✅ 日付
+            // 日付
             String dateStr = request.getParameter("date");
-            if (dateStr != null && !dateStr.isEmpty()) {
-                event.setDate(LocalDate.parse(dateStr));
-            } else {
-                event.setDate(existingEvent.getDate());
-            }
+            event.setDate((dateStr != null && !dateStr.isEmpty()) ? LocalDate.parse(dateStr) : existingEvent.getDate());
 
-            // ✅ 時間
+            // 開始時間
             try {
                 event.setStartHour(Integer.parseInt(request.getParameter("startHour")));
                 event.setStartMinute(Integer.parseInt(request.getParameter("startMinute")));
@@ -114,27 +146,22 @@ public class EventEditServlet extends HttpServlet {
                 event.setStartMinute(existingEvent.getStartMinute());
             }
 
-            // ✅ 継続時間
+            // 継続時間
             try {
                 event.setDurationMinutes(Integer.parseInt(request.getParameter("durationMinutes")));
             } catch (Exception e) {
                 event.setDurationMinutes(existingEvent.getDurationMinutes());
             }
 
-            // ✅ カラー
+            // カラー
             String colorId = request.getParameter("color_id");
-            System.out.println("🎨 color_id = " + request.getParameter("color_id"));
-            if (colorId != null && !colorId.isEmpty()) {
-                event.setColor_id(colorId);
-            } else {
-                event.setColor_id(existingEvent.getColor_id());
-            }
+            event.setColor_id((colorId != null && !colorId.isEmpty()) ? colorId : existingEvent.getColor_id());
 
-            // ✅ 繰り返しフラグ
+            // 繰り返しフラグ
             String repeatStr = request.getParameter("repeat_flag");
             event.setRepeat_flag("1".equals(repeatStr));
 
-            // ✅ 曜日
+            // 曜日
             String[] weekdayIdParams = request.getParameterValues("weekday_ids");
             if (weekdayIdParams != null) {
                 List<Integer> weekdayIds = new ArrayList<>();
@@ -146,7 +173,7 @@ public class EventEditServlet extends HttpServlet {
                 event.setWeekdayIds(existingEvent.getWeekdayIds());
             }
 
-            // ===== 画面分岐 =====
+            /* ---------- 確認画面表示 ---------- */
             if ("confirm".equals(action)) {
                 WeekdayDAO weekdayDao = new WeekdayDAO();
                 List<Weekday> weekdayList = weekdayDao.findAll();
@@ -154,8 +181,10 @@ public class EventEditServlet extends HttpServlet {
                 request.setAttribute("event", event);
                 request.setAttribute("weekdayList", weekdayList);
                 request.getRequestDispatcher("/WEB-INF/jsp/eventEditConfirm.jsp").forward(request, response);
+            }
 
-            } else if ("submit".equals(action)) {
+            /* ---------- 更新処理実行 ---------- */
+            else if ("submit".equals(action)) {
                 EventEditService service = new EventEditService();
                 boolean result = service.updateEvent(event);
 
