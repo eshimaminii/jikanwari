@@ -105,6 +105,11 @@
                   ├─ mysql-connector-j-8.0.33.jar
                   └─ mysql-connector-java-8.0.23.jar
 ```
+
+## 🗺️ ER図
+
+![ER図](src/main/webapp/images/ER.png)
+
 ## 💾 データベース設定
 使用するデータベースは MySQL です。
 以下の SQL を実行してデータベースとテーブルを作成してください。
