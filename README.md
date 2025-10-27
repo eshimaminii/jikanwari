@@ -106,8 +106,10 @@
                   └─ mysql-connector-java-8.0.23.jar
 ```
 
-## 🗺️ ER図
+## 📚 ドキュメント
+Javadocを使用して自動生成したクラス仕様書を `doc/index.html` に含めています。
 
+## 🗺️ ER図
 ![ER図](/ER.png)
 
 ## 💾 データベース設定
