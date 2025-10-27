@@ -1,16 +1,26 @@
+/* ==========================================================
+   common.css
+   全ページ共通のレイアウト・デザインを管理するスタイルシート
+   - 固定ヘッダー＆フッター構成
+   - ボタンスタイルの統一（4種類）
+   - 入力フォームの共通デザイン
+   ========================================================== */
+
+/* ===== ページ全体レイアウト ===== */
 body {
 	margin: 0;
-	padding-top: 80px;
-	padding-bottom: 80px;
+	padding-top: 80px;      /* 固定ヘッダーの高さ分の余白 */
+	padding-bottom: 80px;   /* 固定フッターの高さ分の余白 */
 	font-family: 'Arial', sans-serif;
 	display: flex;
 	justify-content: center;
 	align-items: flex-start;
-	min-height: calc(100vh - 160px);
+	min-height: calc(100vh - 160px); /* ヘッダー＋フッター分を除いた高さ */
 	overflow-x: hidden;
 	background-color: #fff;
 }
 
+/* ===== ヘッダー共通スタイル ===== */
 .site-header {
   background-color: #000;
   height: 80px;
@@ -25,6 +35,7 @@ body {
   box-sizing: border-box;
 }
 
+/* アプリタイトル部分 */
 .header-container {
   color: white;
   font-size: 28px;
@@ -33,6 +44,7 @@ body {
   flex: 1;
 }
 
+/* ===== フッター共通スタイル ===== */
 .site-footer {
   background-color: #000;
   height: 80px;
@@ -45,6 +57,15 @@ body {
   align-items: center;
 }
 
+/* フッター内テキスト */
+.footer-container {
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* ===== ヘッダーボタン（Home / Logout） ===== */
 .header-button {
   display: flex;
   align-items: center;
@@ -55,19 +76,14 @@ body {
   padding: 0 10px;
 }
 
+/* アイコンサイズ統一 */
 .header-button .button-icon {
   width: 30px;
   height: 30px;
   margin-right: 8px;
 }
 
-.footer-container {
-  color: white;
-  font-size: 14px;
-  font-weight: bold;
-  text-align: center;
-}
-
+/* ===== メインコンテンツ領域 ===== */
 .container {
 	background-color: white;
 	width: 100%;
@@ -78,118 +94,30 @@ body {
 	text-align: center;
 }
 
+/* ===== タイトル共通スタイル ===== */
 h1 {
 	font-size: 28px;
 	margin-bottom: 30px;
 }
 
-.image-button {
-	appearance: none; /* ← ブラウザ標準のボタンスタイルを無効化 */
-	  -webkit-appearance: none;
-	  -moz-appearance: none;
-	display: block;
-	width: 100%;
-	max-width: 340px;
-	height: 60px;
-	margin: 0 auto 20px;
-	background-image:
-		url('../images/button_s.png');
-	background-size: contain;
-	background-repeat: no-repeat;
-	background-position: center;
-	background-color: transparent;
-	border: none;
-	cursor: pointer;
-	color: white;
-	font-size: 20px;
-	font-weight: bold;
-	text-align: center;
-	line-height: 60px;
-	text-decoration: none;
-	border-radius: 8px;
-	transition: transform 0.1s ease, filter 0.1s ease;
-}
+/* ==========================================================
+   ボタンデザイン（S / M / L / P の4種類）
+   - 画像ベースのボタン
+   - 押下時のアニメーションあり
+   ========================================================== */
 
-.image-button:active {
-	transform: scale(0.95);
-	filter: brightness(85%);
-}
-
-.image-button-m {
-	appearance: none; /* ← ブラウザ標準のボタンスタイルを無効化 */
-	  -webkit-appearance: none;
-	  -moz-appearance: none;
-	display: block;
-	width: 100%;
-	max-width: 340px;
-	height: 60px;
-	margin: 0 auto 20px;
-	background-image:
-		url('../images/button_m.png');
-	background-size: contain;
-	background-repeat: no-repeat;
-	background-position: center;
-	background-color: transparent;
-	border: none;
-	cursor: pointer;
-	color: white;
-	font-size: 20px;
-	font-weight: bold;
-	text-align: center;
-	line-height: 60px;
-	text-decoration: none;
-	border-radius: 8px;
-	transition: transform 0.1s ease, filter 0.1s ease;
-}
-
-.image-button-m:active {
-	transform: scale(0.95);
-	filter: brightness(85%);
-}
-
-.image-button-l {
-	appearance: none; /* ← ブラウザ標準のボタンスタイルを無効化 */
-	  -webkit-appearance: none;
-	  -moz-appearance: none;
-	display: block;
-	width: 100%;
-	max-width: 340px;
-	height: 60px;
-	margin: 0 auto 20px;
-	background-image:
-		url('../images/button_l.png');
-	background-size: contain;
-	background-repeat: no-repeat;
-	background-position: center;
-	background-color: transparent;
-	border: none;
-	cursor: pointer;
-	color: white;
-	font-size: 20px;
-	font-weight: bold;
-	text-align: center;
-	line-height: 60px;
-	text-decoration: none;
-	border-radius: 8px;
-	transition: transform 0.1s ease, filter 0.1s ease;
-}
-
-.image-button-l:active {
-	transform: scale(0.95);
-	filter: brightness(85%);
-}
-
+.image-button,
+.image-button-m,
+.image-button-l,
 .image-button-p {
-	appearance: none; /* ← ブラウザ標準のボタンスタイルを無効化 */
-	  -webkit-appearance: none;
-	  -moz-appearance: none;
+	appearance: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
 	display: block;
 	width: 100%;
 	max-width: 340px;
 	height: 60px;
 	margin: 0 auto 20px;
-	background-image:
-		url('../images/button_p.png');
 	background-size: contain;
 	background-repeat: no-repeat;
 	background-position: center;
@@ -206,10 +134,25 @@ h1 {
 	transition: transform 0.1s ease, filter 0.1s ease;
 }
 
+/* 押下時の効果 */
+.image-button:active,
+.image-button-m:active,
+.image-button-l:active,
 .image-button-p:active {
 	transform: scale(0.95);
 	filter: brightness(85%);
 }
+
+/* それぞれのボタン画像 */
+.image-button     { background-image: url('../images/button_s.png'); }
+.image-button-m   { background-image: url('../images/button_m.png'); }
+.image-button-l   { background-image: url('../images/button_l.png'); }
+.image-button-p   { background-image: url('../images/button_p.png'); }
+
+/* ==========================================================
+   フォームデザイン（新規登録・ログイン画面などで使用）
+   ========================================================== */
+
 .form-label {
   display: flex;
   flex-direction: column;
@@ -222,6 +165,7 @@ h1 {
   color: #333;
 }
 
+/* 入力欄の基本デザイン */
 .form-label input {
   padding: 10px;
   border: 1px solid #ccc;
@@ -230,9 +174,9 @@ h1 {
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
+/* フォーカス時の装飾（アクセントカラー #5a8dee） */
 .form-label input:focus {
   border-color: #5a8dee;
   box-shadow: 0 0 4px rgba(90, 141, 238, 0.4);
   outline: none;
 }
-
