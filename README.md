@@ -72,7 +72,8 @@
             │  ├─ button_p.png
             │  ├─ button_s.png
             │  ├─ home.png
-            │  └─ logout.png
+            │  ├─ logout.png
+            │  └─ ER.png
             ├─ META-INF
             │  └─ MANIFEST.MF
             └─ WEB-INF
