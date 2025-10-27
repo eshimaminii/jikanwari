@@ -16,7 +16,8 @@
 <head>
 <meta charset="UTF-8">
 <title>メインメニュー｜私の時間割</title>
-<link rel="stylesheet" href="<%=request.getContextPath()%>/css/mainMenu.css">
+<link rel="stylesheet"
+	href="<%=request.getContextPath()%>/css/mainMenu.css">
 </head>
 
 <body>
@@ -28,9 +29,9 @@
 		<div class="header-container">私の時間割</div>
 		<!-- ログアウトボタン（右上） -->
 		<a href="<%=request.getContextPath()%>/LogoutServlet"
-			class="header-button" role="button">
-			<img src="<%=request.getContextPath()%>/images/logout.png"
-				class="button-icon" alt="ログアウト">
+			class="header-button" role="button"> <img
+			src="<%=request.getContextPath()%>/images/logout.png"
+			class="button-icon" alt="ログアウト">
 		</a>
 	</header>
 
@@ -39,14 +40,21 @@
 
 		<!-- 予定登録・曜日指定ページへの導線 -->
 		<a href="<%=request.getContextPath()%>/EventAddServlet"
-			class="image-button-l" role="button">予定を入れる</a>
-		<a href="<%=request.getContextPath()%>/WeeklyEventServlet"
+			class="image-button-l" role="button">予定を入れる</a> <a
+			href="<%=request.getContextPath()%>/WeeklyEventServlet"
 			class="image-button-l" role="button">曜日指定の予定一覧</a>
 
 		<!-- 今日の日付表示（例：10月27日 (月)） -->
 		<div class="date-display">
 			<fmt:formatDate value="${now}" pattern="M月d日 (E)" />
 		</div>
+
+		<!--  お誕生日の場合のみバナーを表示 -->
+		<c:if test="${isBirthday}">
+			<div class="birthday-banner">🎂
+				${loginUser.name}さん、お誕生日おめでとうございます！ 🎉</div>
+		</c:if>
+
 
 		<!-- スケジュール表（7:00〜23:00まで1時間ごと） -->
 		<div class="schedule-table">
@@ -62,13 +70,15 @@
 				</c:forEach>
 
 				<!-- 登録済みイベントを時間位置に応じて配置 -->
-				<c:set var="pxPerMinute" value="1" /> <!-- 1分＝1pxのスケール -->
+				<c:set var="pxPerMinute" value="1" />
+				<!-- 1分＝1pxのスケール -->
 				<c:forEach var="event" items="${todayEvents}">
 					<c:set var="offsetMinutes"
 						value="${(event.startHour - 7) * 60 + event.startMinute}" />
 
 					<!-- イベントブロック（クリックで編集ページへ） -->
-					<a href="<%=request.getContextPath()%>/EventEditServlet?event_id=${event.event_id}"
+					<a
+						href="<%=request.getContextPath()%>/EventEditServlet?event_id=${event.event_id}"
 						class="event-block"
 						style="top: ${offsetMinutes * pxPerMinute}px;
 						       height: ${event.durationMinutes * pxPerMinute}px;

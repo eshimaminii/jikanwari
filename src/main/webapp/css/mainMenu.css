@@ -217,3 +217,22 @@ body {
 	font-size: 0.9em;
 	padding-left: 5px;
 }
+
+/* 🎂 お誕生日メッセージの装飾
+   ピンク〜黄色のグラデーション背景と点滅アニメーション */
+.birthday-banner {
+  background: linear-gradient(90deg, #ff99cc, #ffe680);
+  color: #000;
+  font-weight: bold;
+  font-size: 1.2em;
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  animation: sparkle 2s infinite alternate;
+}
+/* ふわっと明るくなるアニメーション効果 */
+@keyframes sparkle {
+  0% { filter: brightness(100%); }
+  100% { filter: brightness(130%); }
+}

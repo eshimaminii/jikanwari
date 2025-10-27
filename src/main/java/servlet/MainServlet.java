@@ -78,6 +78,10 @@ public class MainServlet extends HttpServlet {
         ScheduleDisplayService service = new ScheduleDisplayService();
         List<Event> todayEvents = service.getTodayEvents(loginUser.getUserId(), today);
 
+     // セッションから誕生日フラグを取得し、JSPに渡す
+        Boolean isBirthday = (Boolean) request.getSession().getAttribute("isBirthday");
+        request.setAttribute("isBirthday", isBirthday);
+        
         // JSPにデータを渡す
         request.setAttribute("todayEvents", todayEvents);
 
