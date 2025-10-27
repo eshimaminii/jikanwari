@@ -108,7 +108,7 @@
 
 ## 🗺️ ER図
 
-![ER図](src/main/webapp/images/ER.png)
+![ER図](/ER.png)
 
 ## 💾 データベース設定
 使用するデータベースは MySQL です。
