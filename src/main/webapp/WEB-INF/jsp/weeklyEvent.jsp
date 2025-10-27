@@ -64,8 +64,8 @@
 				<c:forEach var="weekday" items="${groupedEvents}">
 					<div class="weekday-block">
 						<div class="weekday-title">
+							<!-- 全曜日に設定されている場合は「毎日」と表示 -->
 							<c:choose>
-								<!-- 全曜日に設定されている場合は「毎日」と表示 -->
 								<c:when test="${fn:length(groupedEvents) == 7}">
 									毎日
 								</c:when>

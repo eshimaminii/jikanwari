@@ -52,7 +52,7 @@
 		<!--  お誕生日の場合のみバナーを表示 -->
 		<c:if test="${isBirthday}">
 			<div class="birthday-banner">🎂
-				${loginUser.name}さん、お誕生日おめでとうございます！ 🎉</div>
+				${loginUser.name}さん<br>お誕生日おめでとうございます！ 🎉</div>
 		</c:if>
 
 
