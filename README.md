@@ -25,6 +25,7 @@
 ## 📁 プロジェクト構成
 ```
 └─ jikanwari
+   ├─ doc
    └─ src
       └─ main
          ├─ java
@@ -72,8 +73,7 @@
             │  ├─ button_p.png
             │  ├─ button_s.png
             │  ├─ home.png
-            │  ├─ logout.png
-            │  └─ ER.png
+            │  └─ logout.png
             ├─ META-INF
             │  └─ MANIFEST.MF
             └─ WEB-INF
