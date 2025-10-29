@@ -18,33 +18,33 @@
 	href="<%=request.getContextPath()%>/css/calendar.css">
 
 <script>
-/* ==========================================================
-   モーダル表示制御スクリプト
-   ========================================================== */
-function showEvents(date) {
-  const modal = document.getElementById('eventModal');
-  const content = document.getElementById('modalContent');
+	/* ==========================================================
+	 モーダル表示制御スクリプト
+	 ========================================================== */
+	function showEvents(date) {
+		const modal = document.getElementById('eventModal');
+		const content = document.getElementById('modalContent');
 
-  // いったん中身を空に
-  content.innerHTML = '';
+		// いったん中身を空に
+		content.innerHTML = '';
 
-  // イベントリストを挿入
-  const eventList = document.getElementById('events-' + date).innerHTML;
-  content.insertAdjacentHTML('beforeend', eventList);
+		// イベントリストを挿入
+		const eventList = document.getElementById('events-' + date).innerHTML;
+		content.insertAdjacentHTML('beforeend', eventList);
 
-  // そのあと閉じるボタンを追加
-  content.insertAdjacentHTML(
-    'beforeend',
-    '<button class="image-button-y modal-close-btn" onclick="closeModal()">閉じる</button>'
-  );
+		// そのあと閉じるボタンを追加
+		content
+				.insertAdjacentHTML(
+						'beforeend',
+						'<button class="image-button-y modal-close-btn" onclick="closeModal()">閉じる</button>');
 
-  // モーダルを表示
-  modal.style.display = 'flex';
-}
+		// モーダルを表示
+		modal.style.display = 'flex';
+	}
 
-function closeModal() {
-  document.getElementById('eventModal').style.display = 'none';
-}
+	function closeModal() {
+		document.getElementById('eventModal').style.display = 'none';
+	}
 </script>
 
 </head>
@@ -99,16 +99,18 @@ function closeModal() {
 			</c:if>
 
 			<%-- 空白セルを曜日ぶん追加 --%>
-			<c:forEach var="i" begin="0" end="${firstDayOfWeek - 1}">
-				<div class="calendar-cell empty"></div>
-			</c:forEach>
+			<c:if test="${firstDayOfWeek > 0}">
+				<c:forEach var="i" begin="0" end="${firstDayOfWeek - 1}">
+					<div class="calendar-cell empty"></div>
+				</c:forEach>
+			</c:if>
 
 			<%-- 実際の日付セルを描画 --%>
 			<c:forEach var="day" begin="1" end="${targetMonth.lengthOfMonth()}">
 				<c:set var="dateStr" value="${targetMonth.withDayOfMonth(day)}" />
 				<div class="calendar-cell" onclick="showEvents('${dateStr}')"
 					style="${dateStr eq today ? 'background-color:#fff3cd;' : ''}">
-					
+
 					<%-- 日付ラベル --%>
 					<div class="date-label">${day}</div>
 
@@ -126,9 +128,9 @@ function closeModal() {
 						<ul>
 							<c:forEach var="event" items="${monthEvents}">
 								<c:if test="${event.date eq dateStr}">
-									<li>${event.title}( 
-										<fmt:formatNumber value="${event.startHour}" pattern="00" />:
-										<fmt:formatNumber value="${event.startMinute}" pattern="00" /> )
+									<li>${event.title}(<fmt:formatNumber
+											value="${event.startHour}" pattern="00" />: <fmt:formatNumber
+											value="${event.startMinute}" pattern="00" /> )
 									</li>
 								</c:if>
 							</c:forEach>
@@ -143,11 +145,11 @@ function closeModal() {
 	     モーダルウィンドウ（クリックで当日予定を表示）
 	     ========================================================== --%>
 	<div id="eventModal" class="modal">
-  <div class="modal-content" id="modalContent">
-    <!-- JavaScriptで予定リストがここに入る -->
-    <button class="image-button-y modal-close-btn" onclick="closeModal()">閉じる</button>
-  </div>
-</div>
+		<div class="modal-content" id="modalContent">
+			<!-- JavaScriptで予定リストがここに入る -->
+			<button class="image-button-y modal-close-btn" onclick="closeModal()">閉じる</button>
+		</div>
+	</div>
 
 
 	<%-- ==========================================================
