@@ -45,88 +45,86 @@
 
 		<!-- 予定編集フォーム -->
 		<form action="EventEditServlet" method="post" style="display: inline;">
-			<input type="hidden" name="action" value="confirm">
-			<input type="hidden" name="event_id" value="${event.event_id}">
+  <input type="hidden" name="action" value="confirm">
+  <input type="hidden" name="event_id" value="${event.event_id}">
 
-			<h1>予定の編集</h1>
+  <h1>予定の編集</h1>
 
-			<!-- タイトル入力 -->
-			<p>
-				タイトル：
-				<input type="text" name="title" value="${event.title}" required />
-			</p>
+  <div class="form-card">
 
-			<!-- 日付入力 -->
-			<p>
-				日付：
-				<input type="date" name="date" value="${event.date}" required />
-			</p>
+    <div class="form-row">
+      <label>タイトル：</label>
+      <input type="text" name="title" value="${event.title}" required />
+    </div>
 
-			<!-- 開始時刻入力 -->
-			<p>
-				開始時：
-				<input type="number" name="startHour" value="${event.startHour}" min="0" max="23" required /> 時
-				<input type="number" name="startMinute" value="${event.startMinute}" min="0" max="59" required /> 分
-			</p>
+    <div class="form-row">
+      <label>日付：</label>
+      <input type="date" name="date" value="${event.date}" required />
+    </div>
 
-			<!-- 継続時間 -->
-			<p>
-				継続時間（分）：
-				<input type="number" name="durationMinutes" value="${event.durationMinutes}" min="1" />
-			</p>
+    <div class="form-row">
+      <label>開始時刻：</label>
+      <input type="number" name="startHour" value="${event.startHour}" min="0" max="23" required style="width:80px;"> 時
+      <input type="number" name="startMinute" value="${event.startMinute}" min="0" max="59" required style="width:80px;"> 分
+    </div>
 
-			<!-- メモ入力 -->
-			<p>
-				メモ：
-				<textarea name="description" rows="4" cols="30">${event.description}</textarea>
-			</p>
+    <div class="form-row">
+      <label>継続時間：</label>
+      <input type="number" name="durationMinutes" value="${event.durationMinutes}" min="1" style="width:120px;"> 分
+    </div>
 
-			<!-- 繰り返し設定 -->
-			<p>
-				<span style="font-weight: bold;">繰り返し：</span>
-				<label><input type="radio" name="repeat_flag" value="0" 
-					<c:if test="${!event.repeat_flag}">checked</c:if> />なし</label>
-				<label><input type="radio" name="repeat_flag" value="1" 
-					<c:if test="${event.repeat_flag}">checked</c:if> />あり</label>
-			</p>
+    <div class="form-row">
+      <label>メモ：</label>
+      <textarea name="description">${event.description}</textarea>
+    </div>
 
-			<!-- 曜日選択（繰り返しON時のみ利用） -->
-			<div class="weekday-select">
-				<c:forEach var="weekday" items="${weekdayList}">
-					<label>
-						<input type="checkbox" name="weekday_ids"
-							value="${weekday.weekday_id}"
-							<c:if test="${event.weekdayIds != null && event.weekdayIds.contains(weekday.weekday_id)}">checked</c:if> />
-						${weekday.weekday}
-					</label>
-				</c:forEach>
-			</div>
+    <div class="form-row">
+      <label>繰り返し：</label>
+      <div>
+        <label><input type="radio" name="repeat_flag" value="0" <c:if test="${!event.repeat_flag}">checked</c:if> />なし</label>
+        <label><input type="radio" name="repeat_flag" value="1" <c:if test="${event.repeat_flag}">checked</c:if> />あり</label>
+      </div>
+    </div>
 
-			<!-- カラー選択 -->
-			<p>
-				カラー：
-				<select name="color_id">
-					<c:forEach var="color" items="${colorList}">
-						<option value="${color.color_id}"
-							<c:if test="${color.color_id == event.color_id}">selected</c:if>>
-							${color.color}
-						</option>
-					</c:forEach>
-				</select>
-			</p>
+    <div class="form-row">
+      <label>曜日：</label>
+      <div class="weekday-select">
+        <c:forEach var="weekday" items="${weekdayList}">
+          <label>
+            <input type="checkbox" name="weekday_ids"
+                   value="${weekday.weekday_id}"
+                   <c:if test="${event.weekdayIds != null && event.weekdayIds.contains(weekday.weekday_id)}">checked</c:if> />
+            ${weekday.weekday}
+          </label>
+        </c:forEach>
+      </div>
+    </div>
 
-			<!-- ボタンエリア -->
-			<div class="button-area" style="text-align: center; margin-top: 30px;">
-				<button type="submit" class="image-button">確認</button>
-			</div>
-		</form>
+    <div class="form-row">
+      <label>カラー：</label>
+      <select name="color_id">
+        <c:forEach var="color" items="${colorList}">
+          <option value="${color.color_id}" <c:if test="${color.color_id == event.color_id}">selected</c:if>>
+            ${color.color}
+          </option>
+        </c:forEach>
+      </select>
+    </div>
 
-		<!-- 削除フォーム -->
-		<form action="EventDeleteServlet" method="post" style="display: inline;">
-			<input type="hidden" name="action" value="confirm">
-			<input type="hidden" name="event_id" value="${event.event_id}">
-			<button type="submit" class="image-button-p">削除</button>
-		</form>
+    <div class="form-actions">
+      <button type="submit" class="image-button">確認</button>
+    </div>
+
+  </div>
+</form>
+
+<!-- 削除ボタン（独立フォーム） -->
+<form action="EventDeleteServlet" method="post" style="display: block; text-align: center; margin-top: 20px;">
+  <input type="hidden" name="action" value="confirm">
+  <input type="hidden" name="event_id" value="${event.event_id}">
+  <button type="submit" class="image-button-p">削除</button>
+</form>
+
 	</div>
 
 	<%-- 共通フッター読み込み --%>
