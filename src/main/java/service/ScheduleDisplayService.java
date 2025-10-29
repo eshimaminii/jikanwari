@@ -42,4 +42,9 @@ public class ScheduleDisplayService {
         EventsDAO dao = new EventsDAO();
         return dao.findByDate(userId, date);
     }
+    
+    public List<Event> getEventsBetween(String userId, LocalDate start, LocalDate end) {
+        EventsDAO dao = new EventsDAO();
+        return dao.findBetweenDates(userId, start, end);
+    }
 }

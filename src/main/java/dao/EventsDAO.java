@@ -391,4 +391,73 @@ public class EventsDAO {
 
         return groupedEvents;
     }
+    
+    /**
+     * 指定した期間内のイベントを取得します。<br>
+     * このメソッドは、ユーザーID・開始日・終了日をもとに、
+     * その期間に属するすべてのイベントを日付・時間順に取得します。<br>
+     * 取得対象は論理削除されていないイベントのみです。
+     *
+     * <p>主に月間カレンダー表示などの機能で利用されます。</p>
+     *
+     * <p>使用例：</p>
+     * <pre>{@code
+     * EventsDAO dao = new EventsDAO();
+     * LocalDate start = LocalDate.of(2025, 10, 1);
+     * LocalDate end = LocalDate.of(2025, 10, 31);
+     * List<Event> monthEvents = dao.findBetweenDates("user01@example.com", start, end);
+     * monthEvents.forEach(e -> System.out.println(e.getTitle()));
+     * }</pre>
+     *
+     * @param userId  ユーザーID（メールアドレスなど）
+     * @param start   検索開始日（含む）
+     * @param end     検索終了日（含む）
+     * @return 指定期間内の {@link Event} リスト（存在しない場合は空リスト）
+     */
+    public List<Event> findBetweenDates(String userId, LocalDate start, LocalDate end) {
+        List<Event> eventList = new ArrayList<>();
+
+        String sql = """
+            SELECT event_id, title, date, time, description, color_id, duration_minutes
+            FROM events
+            WHERE user_id = ?
+              AND date BETWEEN ? AND ?
+              AND delete_flag = 0
+            ORDER BY date, time
+        """;
+
+        try (Connection conn = DBManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, userId);
+            pstmt.setDate(2, java.sql.Date.valueOf(start));
+            pstmt.setDate(3, java.sql.Date.valueOf(end));
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Event e = new Event();
+                    e.setEvent_id(rs.getInt("event_id"));
+                    e.setTitle(rs.getString("title"));
+                    e.setDate(rs.getDate("date").toLocalDate());
+
+                    // ← ここを修正！
+                    LocalTime time = rs.getTime("time").toLocalTime();
+                    e.setStartHour(time.getHour());
+                    e.setStartMinute(time.getMinute());
+
+                    e.setDurationMinutes(rs.getInt("duration_minutes"));
+                    e.setDescription(rs.getString("description"));
+                    e.setColor_id(rs.getString("color_id"));
+                    eventList.add(e);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return eventList;
+    }
+
+
 }

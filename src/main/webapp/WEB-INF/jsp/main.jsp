@@ -42,7 +42,9 @@
 		<a href="<%=request.getContextPath()%>/EventAddServlet"
 			class="image-button-l" role="button">予定を入れる</a> <a
 			href="<%=request.getContextPath()%>/WeeklyEventServlet"
-			class="image-button-l" role="button">曜日指定の予定一覧</a>
+			class="image-button-l" role="button">曜日指定の予定一覧</a> <a
+			href="<%=request.getContextPath()%>/MonthlyCalendarServlet"
+			class="image-button-l" role="button">📅 カレンダー表示</a>
 
 		<!-- 今日の日付表示（例：10月27日 (月)） -->
 		<div class="date-display">
@@ -51,8 +53,9 @@
 
 		<!--  お誕生日の場合のみバナーを表示 -->
 		<c:if test="${isBirthday}">
-			<div class="birthday-banner">🎂
-				${loginUser.name}さん<br>お誕生日おめでとうございます！ 🎉</div>
+			<div class="birthday-banner">
+				🎂 ${loginUser.name}さん<br>お誕生日おめでとうございます！ 🎉
+			</div>
 		</c:if>
 
 
