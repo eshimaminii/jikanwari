@@ -21,17 +21,32 @@
 /* ==========================================================
    モーダル表示制御スクリプト
    ========================================================== */
-	function showEvents(date) {
-		const modal = document.getElementById('eventModal');
-		const content = document.getElementById('modalContent');
-		content.innerHTML = document.getElementById('events-' + date).innerHTML;
-		modal.style.display = 'flex';
-	}
+function showEvents(date) {
+  const modal = document.getElementById('eventModal');
+  const content = document.getElementById('modalContent');
 
-	function closeModal() {
-		document.getElementById('eventModal').style.display = 'none';
-	}
+  // いったん中身を空に
+  content.innerHTML = '';
+
+  // イベントリストを挿入
+  const eventList = document.getElementById('events-' + date).innerHTML;
+  content.insertAdjacentHTML('beforeend', eventList);
+
+  // そのあと閉じるボタンを追加
+  content.insertAdjacentHTML(
+    'beforeend',
+    '<button class="image-button-y modal-close-btn" onclick="closeModal()">閉じる</button>'
+  );
+
+  // モーダルを表示
+  modal.style.display = 'flex';
+}
+
+function closeModal() {
+  document.getElementById('eventModal').style.display = 'none';
+}
 </script>
+
 </head>
 
 <body>
@@ -128,9 +143,12 @@
 	     モーダルウィンドウ（クリックで当日予定を表示）
 	     ========================================================== --%>
 	<div id="eventModal" class="modal">
-		<div class="modal-content" id="modalContent"></div>
-		<button class="image-button-y modal-close-btn" onclick="closeModal()">閉じる</button>
-	</div>
+  <div class="modal-content" id="modalContent">
+    <!-- JavaScriptで予定リストがここに入る -->
+    <button class="image-button-y modal-close-btn" onclick="closeModal()">閉じる</button>
+  </div>
+</div>
+
 
 	<%-- ==========================================================
 	     共通フッター読み込み

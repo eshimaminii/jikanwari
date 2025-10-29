@@ -249,21 +249,22 @@ h1 {
 /* モーダル内容 */
 .modal-content {
   background: white;
-  padding: 20px;
+  padding: 20px 20px 30px 20px; /* 下の余白を軽く残す */
   border-radius: 10px;
   width: 86%;
   max-width: 420px;
   text-align: left;
   box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  margin: 0 auto;
 }
 
-/* モーダル閉じるボタン */
+/* 閉じるボタン（モーダル直下に自然配置） */
 .modal-close-btn {
   display: block;
   width: 140px;
   height: 44px;
   line-height: 44px;
-  margin: 20px auto 0 auto;
+  margin: 15px auto 0 auto;  /* 👈 ここで「箱のすぐ下」に出す */
   font-size: 16px;
   text-align: center;
   cursor: pointer;
@@ -276,7 +277,15 @@ h1 {
   font-weight: bold;
   text-shadow: 0 1px 2px rgba(0,0,0,0.7);
   border: none;
+  transition: transform 0.1s ease, filter 0.1s ease;
 }
+
+/* 押下時の微アニメーションだけ残す（逃げない） */
+.modal-close-btn:active {
+  transform: scale(0.97);
+  filter: brightness(90%);
+}
+
 
 /* ==========================================================
    レスポンシブ対応（スマホ／タブレット）
