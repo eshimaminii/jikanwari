@@ -22,14 +22,21 @@
 	<%@ include file="/common/header_plain.jsp"%>
 
 	<div class="container">
+		<div class="puni-bg">
+			<div class="puni puni-yellow"></div>
+			<div class="puni puni-pink"></div>
+			<div class="puni puni-purple"></div>
+			<div class="puni puni-green"></div>
+			<div class="puni puni-blue"></div>
+		</div>
+
 		<h1>私の時間割</h1>
 
 		<!-- アカウント導線ナビゲーション -->
 		<nav>
 			<a href="<%=request.getContextPath()%>/NewUserServlet"
-				class="image-button" role="button">新規登録</a>
-
-			<a href="<%=request.getContextPath()%>/LoginServlet"
+				class="image-button" role="button">新規登録</a> <a
+				href="<%=request.getContextPath()%>/LoginServlet"
 				class="image-button-p" role="button">ログイン</a>
 		</nav>
 	</div>

@@ -19,6 +19,15 @@ body {
 	overflow-x: hidden;
 }
 
+body {
+  opacity: 0;
+  animation: fadeIn 0.4s ease-in-out forwards;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 /* ===== ヘッダー・フッター ===== */
 .site-header {
 	background-color: #000;
@@ -96,6 +105,12 @@ body {
 	padding: 30px 20px;
 	border-radius: 10px;
 	text-align: center;
+}
+.container input:hover,
+.container textarea:hover,
+.container select:hover {
+  box-shadow: 0 0 8px rgba(255, 216, 77, 0.4); /* やさしい黄色の光 */
+  border-color: #ffd84d;
 }
 
 /* ===== ボタン（メインメニュー操作） ===== */
