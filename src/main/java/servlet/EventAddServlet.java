@@ -57,25 +57,21 @@ public class EventAddServlet extends HttpServlet {
     /**
      * GETリクエスト処理。<br>
      * カラー・曜日リストをデータベースから取得し、登録フォームへ転送します。
-     *
-     * @param request  クライアントからのHTTPリクエスト
-     * @param response サーバーからのHTTPレスポンス
-     * @throws ServletException サーブレットエラー発生時
-     * @throws IOException      入出力エラー発生時
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         try {
+            // デフォルトの継続時間（分）をビューに渡す
+            request.setAttribute("durationMinutes", 60);
+
             // カラー・曜日リストをDBから取得
             ColorDAO colorDao = new ColorDAO();
             WeekdayDAO weekdayDao = new WeekdayDAO();
 
             List<Color> colorList = colorDao.findAll();
             List<Weekday> weekdayList = weekdayDao.findAll();
-            request.setAttribute("durationMinutes", 60);
-
 
             // JSPへ渡す
             request.setAttribute("colorList", colorList);
@@ -87,18 +83,14 @@ public class EventAddServlet extends HttpServlet {
         }
 
         // 入力フォームへフォワード
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/eventAddForm.jsp");
+        RequestDispatcher dispatcher =
+                request.getRequestDispatcher("/WEB-INF/jsp/eventAddForm.jsp");
         dispatcher.forward(request, response);
     }
 
     /**
      * POSTリクエスト処理。<br>
-     * actionパラメータに応じて、<b>確認画面</b>または<b>登録処理</b>を実行します。
-     *
-     * @param request  クライアントからのHTTPリクエスト
-     * @param response サーバーからのHTTPレスポンス
-     * @throws ServletException サーブレットエラー発生時
-     * @throws IOException      入出力エラー発生時
+     * actionパラメータに応じて、確認画面表示または登録処理を行います。
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -111,24 +103,25 @@ public class EventAddServlet extends HttpServlet {
         HttpSession session = request.getSession();
         User loginUser = (User) session.getAttribute("loginUser");
 
-        // ログインチェック
+        // ログインチェック（セッション切れもここで拾う）
         if (loginUser == null) {
             response.sendRedirect(request.getContextPath() + "/LoginServlet");
             return;
         }
 
-        /* ---------- 確認画面処理 ---------- */
+        /* ========================================================
+           確認画面表示処理 (action=confirm)
+           ======================================================== */
         if ("confirm".equals(action)) {
             try {
                 // 入力値取得
-                String title = request.getParameter("title");
-                String dateStr = request.getParameter("date");
-                String hourStr = request.getParameter("startHour");
-                String minuteStr = request.getParameter("startMinute");
+                String title       = request.getParameter("title");
+                String dateStr     = request.getParameter("date");
+                String hourStr     = request.getParameter("startHour");
+                String minuteStr   = request.getParameter("startMinute");
                 String durationStr = request.getParameter("durationMinutes");
-                System.out.println("durationStr = " + durationStr);
                 String description = request.getParameter("description");
-                String colorId = request.getParameter("color_id");
+                String colorId     = request.getParameter("color_id");
                 String repeatFlagStr = request.getParameter("repeat_flag");
 
                 // 曜日チェックボックス取得
@@ -139,6 +132,7 @@ public class EventAddServlet extends HttpServlet {
                         weekdayIds.add(Integer.parseInt(idStr));
                     }
                 }
+                // 曜日は登録時に使うのでセッションに一旦保存
                 session.setAttribute("weekdayIds", weekdayIds);
 
                 // イベントオブジェクト生成
@@ -152,13 +146,13 @@ public class EventAddServlet extends HttpServlet {
                 event.setColor_id(colorId);
                 event.setRepeat_flag("1".equals(repeatFlagStr));
                 event.setDelete_flag(false);
-                
-             //カラー名を取得してセット
+
+                // カラー名を取得してセット（確認画面で色名を表示するため）
                 ColorDAO colorDao = new ColorDAO();
                 String colorName = colorDao.findColorNameById(colorId);
                 event.setColor_name(colorName);
 
-                // セッションに保存
+                // セッションに保存（submit時にもう一度使う）
                 session.setAttribute("event", event);
 
                 // 確認画面へフォワード
@@ -175,12 +169,15 @@ public class EventAddServlet extends HttpServlet {
             }
         }
 
-        /* ---------- 登録処理 ---------- */
+        /* ========================================================
+           登録処理 (action=submit)
+           ======================================================== */
         if ("submit".equals(action)) {
             Event savedEvent = (Event) session.getAttribute("event");
             @SuppressWarnings("unchecked")
             List<Integer> weekdayIds = (List<Integer>) session.getAttribute("weekdayIds");
 
+            // セッションが切れている場合
             if (savedEvent == null) {
                 request.setAttribute("error", "セッションが切れました。再度入力してください。");
                 doGet(request, response);
@@ -190,6 +187,7 @@ public class EventAddServlet extends HttpServlet {
             boolean result = false;
             try {
                 EventService service = new EventService();
+                // ログイン中のユーザーIDを渡して登録
                 result = service.addEvent(savedEvent, loginUser.getUserId(), weekdayIds);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -201,7 +199,8 @@ public class EventAddServlet extends HttpServlet {
                 session.removeAttribute("weekdayIds");
 
                 // 完了画面へ
-                request.getRequestDispatcher("/WEB-INF/jsp/eventAddComplete.jsp").forward(request, response);
+                request.getRequestDispatcher("/WEB-INF/jsp/eventAddComplete.jsp")
+                        .forward(request, response);
             } else {
                 request.setAttribute("error", "登録に失敗しました。");
                 doGet(request, response);

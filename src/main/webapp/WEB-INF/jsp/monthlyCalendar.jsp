@@ -109,7 +109,8 @@
 			<c:forEach var="day" begin="1" end="${targetMonth.lengthOfMonth()}">
 				<c:set var="dateStr" value="${targetMonth.withDayOfMonth(day)}" />
 				<div class="calendar-cell" onclick="showEvents('${dateStr}')"
-					style="${dateStr eq today ? 'background-color:#fff3cd;' : ''}">
+					style="${dateStr eq today ? 'border:2px solid #39FF14;' : ''}"
+>
 
 					<%-- 日付ラベル --%>
 					<div class="date-label">${day}</div>
