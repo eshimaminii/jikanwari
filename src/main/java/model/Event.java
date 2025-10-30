@@ -47,6 +47,9 @@ public class Event {
 
     /** カラーID（表示色の指定） */
     private String color_id;
+    
+    /** カラーの名前 */
+    private String color_name;
 
     /** 論理削除フラグ（true: 削除済み） */
     private boolean delete_flag;
@@ -126,4 +129,8 @@ public class Event {
 
     public String getUser_id() { return user_id; }
     public void setUser_id(String user_id) { this.user_id = user_id; }
+
+    public String getColor_name() { return color_name; }
+    public void setColor_name(String color_name) { this.color_name = color_name; }
+
 }

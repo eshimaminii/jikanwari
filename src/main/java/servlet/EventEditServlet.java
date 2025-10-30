@@ -12,7 +12,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import dao.ColorDAO;
-import dao.EventsDAO;
 import dao.WeekdayDAO;
 import model.Color;
 import model.Event;
@@ -72,9 +71,9 @@ public class EventEditServlet extends HttpServlet {
         int eventId = Integer.parseInt(eventIdStr);
 
         // イベント情報と関連データを取得
-        EventsDAO dao = new EventsDAO();
-        Event event = dao.findById(eventId);
-        List<Integer> weekdayIds = dao.findWeekdaysByEventId(eventId);
+        EventEditService service = new EventEditService();
+        Event event = service.findEventById(eventId);
+        List<Integer> weekdayIds = service.findWeekdaysByEventId(eventId);
         event.setWeekdayIds(weekdayIds);
 
         // カラー・曜日データも取得
@@ -111,8 +110,8 @@ public class EventEditServlet extends HttpServlet {
         if ("confirm".equals(action) || "submit".equals(action)) {
 
             int eventId = Integer.parseInt(request.getParameter("event_id"));
-            EventsDAO dao = new EventsDAO();
-            Event existingEvent = dao.findById(eventId);
+            EventEditService service = new EventEditService();
+            Event existingEvent = service.findEventById(eventId);
 
             // イベント存在チェック
             if (existingEvent == null) {
@@ -121,7 +120,7 @@ public class EventEditServlet extends HttpServlet {
                 return;
             }
 
-            // 新しいイベントオブジェクト作成（入力内容を反映）
+            // イベントオブジェクト生成（入力内容を反映）
             Event event = new Event();
             event.setEvent_id(eventId);
 
@@ -177,6 +176,11 @@ public class EventEditServlet extends HttpServlet {
             if ("confirm".equals(action)) {
                 WeekdayDAO weekdayDao = new WeekdayDAO();
                 List<Weekday> weekdayList = weekdayDao.findAll();
+                
+             // 色名をセット
+                ColorDAO colorDao = new ColorDAO();
+                String colorName = colorDao.findColorNameById(event.getColor_id());
+                event.setColor_name(colorName);
 
                 request.setAttribute("event", event);
                 request.setAttribute("weekdayList", weekdayList);
@@ -185,7 +189,6 @@ public class EventEditServlet extends HttpServlet {
 
             /* ---------- 更新処理実行 ---------- */
             else if ("submit".equals(action)) {
-                EventEditService service = new EventEditService();
                 boolean result = service.updateEvent(event);
 
                 if (result) {

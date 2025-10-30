@@ -152,6 +152,11 @@ public class EventAddServlet extends HttpServlet {
                 event.setColor_id(colorId);
                 event.setRepeat_flag("1".equals(repeatFlagStr));
                 event.setDelete_flag(false);
+                
+             //カラー名を取得してセット
+                ColorDAO colorDao = new ColorDAO();
+                String colorName = colorDao.findColorNameById(colorId);
+                event.setColor_name(colorName);
 
                 // セッションに保存
                 session.setAttribute("event", event);

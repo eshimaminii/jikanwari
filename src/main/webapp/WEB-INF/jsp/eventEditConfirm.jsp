@@ -63,7 +63,7 @@
         <td>
           <div class="color-preview">
             <div class="color-swatch" style="background-color:${event.color_id};"></div>
-            <span>${event.color_id}</span>
+            <span>${event.color_name}</span>
           </div>
         </td>
       </tr>

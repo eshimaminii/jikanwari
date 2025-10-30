@@ -3,6 +3,7 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,5 +55,21 @@ public class ColorDAO {
         }
 
         return list;
+    }
+    
+    public String findColorNameById(String colorId) {
+        String colorName = null;
+        String sql = "SELECT color FROM colors WHERE color_id = ?";
+        try (Connection conn = DBManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, colorId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                colorName = rs.getString("color");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return colorName;
     }
 }

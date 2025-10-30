@@ -53,22 +53,24 @@ public class EventsDAO {
     public List<Event> findByDate(String userId, LocalDate date) {
         List<Event> events = new ArrayList<>();
         String sql = """
-            SELECT 
-                e.event_id, e.title, e.date, e.description, e.repeat_flag,
-                e.color_id, e.delete_flag, e.duration_minutes,
-                TIME_FORMAT(e.time, '%H') AS start_hour, 
-                TIME_FORMAT(e.time, '%i') AS start_minute
-            FROM events e
-            LEFT JOIN event_weekdays ew ON e.event_id = ew.event_id
-            LEFT JOIN weekdays w ON ew.weekday_id = w.weekday_id
-            WHERE e.user_id = ?
-              AND e.delete_flag = 0
-              AND (
-                  e.date = ?                           -- 単発予定
-                  OR (e.repeat_flag = 1 AND w.weekday_id = ?)  -- 曜日繰り返し予定
-              )
-            ORDER BY e.time;
-        """;
+        	    SELECT 
+        	        e.event_id, e.title, e.date, e.description, e.repeat_flag,
+        	        e.color_id, c.color AS color_name, e.delete_flag, e.duration_minutes,
+        	        TIME_FORMAT(e.time, '%H') AS start_hour, 
+        	        TIME_FORMAT(e.time, '%i') AS start_minute
+        	    FROM events e
+        	    JOIN colors c ON e.color_id = c.color_id
+        	    LEFT JOIN event_weekdays ew ON e.event_id = ew.event_id
+        	    LEFT JOIN weekdays w ON ew.weekday_id = w.weekday_id
+        	    WHERE e.user_id = ?
+        	      AND e.delete_flag = 0
+        	      AND (
+        	          e.date = ?
+        	          OR (e.repeat_flag = 1 AND w.weekday_id = ?)
+        	      )
+        	    ORDER BY e.time;
+        	""";
+
 
         try (Connection conn = DBManager.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -91,6 +93,7 @@ public class EventsDAO {
                 e.setDescription(rs.getString("description"));
                 e.setRepeat_flag(rs.getInt("repeat_flag") == 1);
                 e.setColor_id(rs.getString("color_id"));
+                e.setColor_name(rs.getString("color_name"));
                 e.setDelete_flag(rs.getInt("delete_flag") == 1);
                 e.setStartHour(rs.getInt("start_hour"));
                 e.setStartMinute(rs.getInt("start_minute"));
@@ -187,7 +190,13 @@ public class EventsDAO {
     public Event findById(int eventId) {
         Event event = null;
         try (Connection conn = DBManager.getConnection()) {
-            String sql = "SELECT * FROM events WHERE event_id = ?";
+        	String sql = """
+        		    SELECT e.*, c.color AS color_name
+        		    FROM events e
+        		    JOIN colors c ON e.color_id = c.color_id
+        		    WHERE e.event_id = ?
+        		""";
+
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setInt(1, eventId);
                 try (ResultSet rs = stmt.executeQuery()) {
@@ -202,6 +211,7 @@ public class EventsDAO {
                         event.setDescription(rs.getString("description"));
                         event.setRepeat_flag(rs.getInt("repeat_flag") == 1);
                         event.setColor_id(rs.getString("color_id"));
+                        event.setColor_name(rs.getString("color_name"));
                     }
                 }
             }
