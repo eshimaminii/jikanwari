@@ -115,8 +115,8 @@ public class EventsDAO {
     public Integer insert(Event event) {
         String sql = """
             INSERT INTO events
-            (title, date, time, description, repeat_flag, color_id, delete_flag, user_id)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            (title, date, time, description, repeat_flag, color_id, duration_minutes, delete_flag, user_id)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         """;
 
         try (Connection conn = DBManager.getConnection();
@@ -130,8 +130,9 @@ public class EventsDAO {
             pstmt.setString(4, event.getDescription());
             pstmt.setInt(5, event.isRepeat_flag() ? 1 : 0);
             pstmt.setString(6, event.getColor_id());
-            pstmt.setInt(7, event.isDelete_flag() ? 1 : 0);
-            pstmt.setString(8, event.getUser_id());
+            pstmt.setInt(7, event.getDurationMinutes()); // ← これを追加！！
+            pstmt.setInt(8, event.isDelete_flag() ? 1 : 0);
+            pstmt.setString(9, event.getUser_id());
 
             int result = pstmt.executeUpdate();
             if (result != 1) return null;
@@ -147,6 +148,7 @@ public class EventsDAO {
         }
         return null;
     }
+
 
     /**
      * 既存のイベント情報を更新します。

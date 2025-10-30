@@ -47,7 +47,8 @@
 
 	<div class="container">
 		<!-- 予定登録フォーム -->
-		<form action="EventAddServlet" method="post">
+		<form action="EventAddServlet" method="post" autocomplete="off">
+		
 			<input type="hidden" name="action" value="confirm">
 
 			<h1>予定の入力</h1>
@@ -70,8 +71,10 @@
 				</div>
 
 				<div class="form-row">
-					<label>継続時間：</label> <input type="number" name="durationMinutes"
-						value="60" min="1" style="width: 120px;"> 分
+					<label>継続時間：</label><input type="number" name="durationMinutes"
+						value="${param.durationMinutes != null ? param.durationMinutes : durationMinutes}"
+						min="1" style="width: 120px;"> 分
+
 				</div>
 
 				<div class="form-row">

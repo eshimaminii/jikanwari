@@ -74,6 +74,8 @@ public class EventAddServlet extends HttpServlet {
 
             List<Color> colorList = colorDao.findAll();
             List<Weekday> weekdayList = weekdayDao.findAll();
+            request.setAttribute("durationMinutes", 60);
+
 
             // JSPへ渡す
             request.setAttribute("colorList", colorList);
@@ -124,6 +126,7 @@ public class EventAddServlet extends HttpServlet {
                 String hourStr = request.getParameter("startHour");
                 String minuteStr = request.getParameter("startMinute");
                 String durationStr = request.getParameter("durationMinutes");
+                System.out.println("durationStr = " + durationStr);
                 String description = request.getParameter("description");
                 String colorId = request.getParameter("color_id");
                 String repeatFlagStr = request.getParameter("repeat_flag");

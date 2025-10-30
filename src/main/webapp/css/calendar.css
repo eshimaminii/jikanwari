@@ -196,7 +196,15 @@ h1 {
   transition: box-shadow 0.15s ease, transform 0.02s ease;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  outline: none;
+}
+
+.calendar-cell:focus {
+  outline: none;
 }
 
 /* ホバー効果 */
