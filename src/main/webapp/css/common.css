@@ -151,61 +151,80 @@ h1 {
    - 画像ベースのボタン
    - 押下時のアニメーションあり
    ========================================================== */
+   /* ==========================================================
+      ボタンデザイン（S / M / L / P の4種類）
+      - 画像ベースのボタン
+      - 押下時のアニメーションあり
+      - 背景画像＋テキスト構成
+      - 見た目維持＆クリック範囲調整
+      ========================================================== */
 
-.image-button,
-.image-button-m,
-.image-button-l,
-.image-button-p {
-	appearance: none;
-	-webkit-appearance: none;
-	-moz-appearance: none;
-	display: block;
-	width: 100%;
-	max-width: 340px;
-	height: 60px;
-	margin: 0 auto 20px;
-	background-size: contain;
-	background-repeat: no-repeat;
-	background-position: center;
-	background-color: transparent;
-	border: none;
-	cursor: pointer;
-	color: white;
-	font-size: 20px;
-	font-weight: bold;
-	text-align: center;
-	line-height: 60px;
-	text-decoration: none;
-	border-radius: 8px;
-	transition: transform 0.1s ease, filter 0.1s ease;
-	filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
-}
+   .image-button,
+   .image-button-m,
+   .image-button-l,
+   .image-button-p {
+     appearance: none;
+     -webkit-appearance: none;
+     -moz-appearance: none;
+     position: relative;
+     display: inline-block;
+     width: 100%;
+     max-width: 340px;
+     height: 60px;
+     margin: 0 auto 20px;
+     background-size: contain;
+     background-repeat: no-repeat;
+     background-position: center;
+     background-color: transparent;
+     border: none;
+     cursor: pointer;
+     color: white;
+     font-size: 20px;
+     font-weight: bold;
+     text-align: center;
+     line-height: 60px;
+     text-decoration: none;
+     border-radius: 8px;
+     transition: transform 0.1s ease, filter 0.1s ease;
+     filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
+     overflow: hidden; /* ← クリック範囲を画像形に制限 */
+   }
 
-/* 押下時の効果 */
-.image-button:active,
-.image-button-m:active,
-.image-button-l:active,
-.image-button-p:active {
-	transform: scale(0.95);
-	filter: brightness(85%);
-}
+   /* 押下時の効果 */
+   .image-button:active,
+   .image-button-m:active,
+   .image-button-l:active,
+   .image-button-p:active {
+     transform: scale(0.95);
+     filter: brightness(85%);
+   }
 
-/* それぞれのボタン画像 */
-.image-button     { background-image: url('../images/button_s.png'); }
-.image-button-m   { background-image: url('../images/button_m.png'); }
-.image-button-l   { background-image: url('../images/button_l.png'); }
-.image-button-p   { background-image: url('../images/button_p.png'); }
+   /* 背景画像指定 */
+   .image-button     { background-image: url('../images/button_s.png'); }
+   .image-button-m   { background-image: url('../images/button_m.png'); }
+   .image-button-l   { background-image: url('../images/button_l.png'); }
+   .image-button-p   { background-image: url('../images/button_p.png'); }
 
-/* ボタンデザイン */
+   /* ホバー効果（軽い浮き感） */
+   .image-button:hover,
+   .image-button-m:hover,
+   .image-button-l:hover,
+   .image-button-p:hover,
+   .image-button-y:hover {
+     filter: brightness(1.1);
+     transform: scale(1.02);
+   }
 
-.image-button:hover,
-.image-button-m:hover,
-.image-button-l:hover,
-.image-button-p:hover,
-.image-button-y:hover {
-  filter: brightness(1.1);
-  transform: scale(1.02);
-}
+   /* ===== テキスト中央揃えをより安定させる ===== */
+   .image-button span,
+   .image-button-m span,
+   .image-button-l span,
+   .image-button-p span {
+     position: relative;
+     z-index: 2;
+     pointer-events: none;
+   }
+
 
 /* ==========================================================
    フォームデザイン（新規登録・ログイン画面などで使用）

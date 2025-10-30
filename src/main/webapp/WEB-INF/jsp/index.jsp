@@ -35,9 +35,9 @@
 		<!-- アカウント導線ナビゲーション -->
 		<nav>
 			<a href="<%=request.getContextPath()%>/NewUserServlet"
-				class="image-button" role="button">新規登録</a> <a
+				class="image-button" role="button"><span>新規登録</span></a> <a
 				href="<%=request.getContextPath()%>/LoginServlet"
-				class="image-button-p" role="button">ログイン</a>
+				class="image-button-p" role="button"><span>ログイン</span></a>
 		</nav>
 	</div>
 
