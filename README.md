@@ -199,7 +199,7 @@ private static final String PASSWORD = "（あなたのパスワード）";
 ## 🖥️ 画面構成
 | 画面 | 説明 |
 |------|------|
-| ログインページ | ユーザー認証を行う |
+| ログインページ（login.jsp） | ユーザー認証を行う |
 | メインページ（main.jsp） | 当日の予定一覧を表示 |
 | 予定登録ページ（eventAddForm.jsp） | 新規予定を登録 |
 | 予定編集ページ（eventEditForm.jsp） | 登録済み予定を編集 |
